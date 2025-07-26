@@ -313,6 +313,13 @@
       ]
     },
     {
+      "path": "Welcome.md",
+      "optional": true,
+      "key": "welcome",
+      "displayName": "Welcome",
+      "requires": []
+    },
+    {
       "path": "World/People/Non-Player Characters/Lomin Topplesquirt.md",
       "optional": true,
       "key": "world-people-non-player characters-lomin topplesquirt",
