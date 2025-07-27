@@ -1,6 +1,13 @@
 {
   "files": [
     {
+      "path": ".vvunderlore_installed",
+      "optional": false,
+      "key": "",
+      "displayName": "",
+      "requires": []
+    },
+    {
       "path": "Adventures/Omninomicon.md",
       "optional": false,
       "key": "adventures-omninomicon",
@@ -12,6 +19,7 @@
         "world-people-player characters-active",
         "world-people-player characters-inactive",
         "world-places",
+        "",
         "extras",
         "extras-templates",
         "world",
@@ -39,6 +47,7 @@
         "adventures",
         "adventures-the testing of vvunderlore",
         "adventures-the testing of vvunderlore-session notes",
+        "",
         "extras-templates-(the testing of vvunderlore)sessiontemplate",
         "extras",
         "extras-templates"
@@ -53,6 +62,7 @@
         "adventures",
         "adventures-the testing of vvunderlore",
         "adventures-the testing of vvunderlore-session notes",
+        "",
         "extras-templates-(the testing of vvunderlore)sessiontemplate",
         "extras",
         "extras-templates"
@@ -67,6 +77,7 @@
         "adventures",
         "adventures-the testing of vvunderlore",
         "adventures-the testing of vvunderlore-session notes",
+        "",
         "extras-templates-(the testing of vvunderlore)sessiontemplate",
         "extras",
         "extras-templates"
@@ -83,6 +94,7 @@
         "adventures-the testing of vvunderlore-session notes",
         "world-people-player characters-active",
         "world-people-player characters-inactive",
+        "",
         "extras-templates-(the testing of vvunderlore)sessiontemplate",
         "extras",
         "extras-templates",
@@ -99,6 +111,7 @@
       "requires": [
         "extras",
         "extras-pc dashboards",
+        "",
         "world",
         "world-people",
         "world-people-player characters",
@@ -112,7 +125,8 @@
       "displayName": "Dash Chixlum The Handsy",
       "requires": [
         "extras",
-        "extras-pc dashboards"
+        "extras-pc dashboards",
+        ""
       ]
     },
     {
@@ -122,7 +136,8 @@
       "displayName": "Dash Munch Tippledew",
       "requires": [
         "extras",
-        "extras-pc dashboards"
+        "extras-pc dashboards",
+        ""
       ]
     },
     {
@@ -144,6 +159,7 @@
         "extras",
         "extras-templates",
         "adventures-the testing of vvunderlore-session notes",
+        "",
         "extras-sys-the testing of vvunderlore_summary",
         "adventures",
         "adventures-the testing of vvunderlore",
@@ -158,6 +174,7 @@
       "requires": [
         "extras",
         "extras-templates",
+        "",
         "adventures",
         "extras-sys"
       ]
@@ -169,7 +186,8 @@
       "displayName": "Encounter Template",
       "requires": [
         "extras",
-        "extras-templates"
+        "extras-templates",
+        ""
       ]
     },
     {
@@ -180,6 +198,7 @@
       "requires": [
         "extras",
         "extras-templates",
+        "",
         "extras-templates-base_sessiontemplate",
         "adventures",
         "extras-sys"
@@ -192,7 +211,8 @@
       "displayName": "Newcreature Template",
       "requires": [
         "extras",
-        "extras-templates"
+        "extras-templates",
+        ""
       ]
     },
     {
@@ -202,7 +222,8 @@
       "displayName": "Newitem Template",
       "requires": [
         "extras",
-        "extras-templates"
+        "extras-templates",
+        ""
       ]
     },
     {
@@ -213,6 +234,7 @@
       "requires": [
         "extras",
         "extras-templates",
+        "",
         "world",
         "world-places"
       ]
@@ -225,6 +247,7 @@
       "requires": [
         "extras",
         "extras-templates",
+        "",
         "world",
         "world-people",
         "world-people-non-player characters"
@@ -238,6 +261,7 @@
       "requires": [
         "extras",
         "extras-templates",
+        "",
         "extras-templates-playerdash_template",
         "extras-pc dashboards",
         "world",
@@ -253,6 +277,7 @@
       "requires": [
         "extras",
         "extras-templates",
+        "",
         "world",
         "world-people",
         "world-people-player characters",
@@ -266,7 +291,8 @@
       "displayName": "Statblock Template",
       "requires": [
         "extras",
-        "extras-templates"
+        "extras-templates",
+        ""
       ]
     },
     {
@@ -276,7 +302,8 @@
       "displayName": "Vermunitem Template",
       "requires": [
         "extras",
-        "extras-templates"
+        "extras-templates",
+        ""
       ]
     },
     {
@@ -287,6 +314,7 @@
       "requires": [
         "tools",
         "world-people-player characters-active",
+        "",
         "world",
         "world-people",
         "world-people-player characters"
@@ -298,7 +326,8 @@
       "key": "tools-spellbook",
       "displayName": "Spellbook",
       "requires": [
-        "tools"
+        "tools",
+        ""
       ]
     },
     {
@@ -308,6 +337,7 @@
       "displayName": "Vermun The Wandering Trader",
       "requires": [
         "tools",
+        "",
         "extras",
         "extras-templates"
       ]
@@ -327,7 +357,8 @@
       "requires": [
         "world",
         "world-people",
-        "world-people-non-player characters"
+        "world-people-non-player characters",
+        ""
       ]
     },
     {
@@ -339,7 +370,8 @@
         "world",
         "world-people",
         "world-people-player characters",
-        "world-people-player characters-active"
+        "world-people-player characters-active",
+        ""
       ]
     },
     {
@@ -351,7 +383,8 @@
         "world",
         "world-people",
         "world-people-player characters",
-        "world-people-player characters-active"
+        "world-people-player characters-active",
+        ""
       ]
     },
     {
@@ -363,7 +396,8 @@
         "world",
         "world-people",
         "world-people-player characters",
-        "world-people-player characters-inactive"
+        "world-people-player characters-inactive",
+        ""
       ]
     },
     {
