@@ -20,7 +20,6 @@
   "backupError": "",
   "customPaths": [],
   "autoBackupBeforeUpdate": true,
-  "needsInstall": false,
   "highlightEnabled": false,
   "highlightColorLight": "rgb(107, 146, 120)",
   "highlightColorDark": "rgb( 50,  70,  50)",
@@ -28,7 +27,7 @@
   "rulesetReference": [],
   "reparseGamesets": true,
   "latestToolkitVersion": "1.1.4",
-  "lastChecked": "2025-07-27T16:10:34.027Z",
+  "lastChecked": "2025-07-27T18:10:33.838Z",
   "fileCache": {
     "Adventures/Omninomicon.md": {
       "hash": "71dff1deb85a5f2a14ec6766a70a61f6f8b37a0872875f780e0ae0f9372b115d",

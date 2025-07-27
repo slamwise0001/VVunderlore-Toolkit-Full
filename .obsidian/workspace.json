@@ -194,11 +194,12 @@
       "initiative-tracker:Initiative Tracker Encounter Builder": false
     }
   },
-  "active": "7a8417feed5c0df5",
+  "active": "a3efd5e8c266eefd",
   "lastOpenFiles": [
+    "README.md",
+    "Welcome.md",
     "Resources/Rulesets",
     "Resources/Untitled.md",
-    "Welcome.md",
     "Extras/Templates/playercharacter_template.md",
     "Compendium/Items/Homebrew Items/Wand of Templating.md",
     "World/History",
@@ -206,7 +207,6 @@
     "Adventures/Omninomicon.md",
     "Extras/Templates/newadventure_template.md",
     "Extras/Templates/base_sessiontemplate.md",
-    "README.md",
     "Tools/Party Overview.md",
     "World/People/Player Characters/Active/Chixlum the Handsy.md",
     "Extras/Templates/playerdash_template.md",
@@ -230,7 +230,6 @@
     "Adventures/Cool Fun For Everyone/Session Notes",
     "Adventures/The Testing of VVunderlore/Materials",
     "Adventures/The Testing of VVunderlore/Adventure",
-    "Adventures/Cool Fun For Everyone",
-    "Adventures/The Testing of VVunderlore"
+    "Adventures/Cool Fun For Everyone"
   ]
 }
