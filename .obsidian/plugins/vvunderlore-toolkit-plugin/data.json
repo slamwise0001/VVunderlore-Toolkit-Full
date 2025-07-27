@@ -27,8 +27,12 @@
   "rulesetReference": [],
   "reparseGamesets": true,
   "latestToolkitVersion": "1.1.4",
-  "lastChecked": "2025-07-27T18:10:33.838Z",
+  "lastChecked": "2025-07-27T19:14:01.351Z",
   "fileCache": {
+    ".vvunderlore_installed": {
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "githubPath": ".vvunderlore_installed"
+    },
     "Adventures/Omninomicon.md": {
       "hash": "71dff1deb85a5f2a14ec6766a70a61f6f8b37a0872875f780e0ae0f9372b115d",
       "githubPath": "Adventures/Omninomicon.md"
