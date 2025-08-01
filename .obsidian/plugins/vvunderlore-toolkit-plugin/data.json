@@ -23,11 +23,12 @@
   "highlightEnabled": false,
   "highlightColorLight": "rgb(107, 146, 120)",
   "highlightColorDark": "rgb( 50,  70,  50)",
-  "rulesetCompendium": "",
+  "rulesetCompendium": "none",
   "rulesetReference": [],
   "reparseGamesets": true,
+  "isFirstRun": "yes",
   "latestToolkitVersion": "1.1.4",
-  "lastChecked": "2025-07-27T22:32:09.862Z",
+  "lastChecked": "2025-08-01T05:09:29.875Z",
   "fileCache": {
     ".vvunderlore_installed": {
       "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
