@@ -16,7 +16,7 @@ The toolkit is ready to be populated with all your great ideas and adventures an
 ### Changes and Updates
 I'm constantly expanding and evolving this toolkit so I'll try to keep announcements as regular and loud as I can. If that fails, the front page of the [website](https://vvunderlore.com/Toolkit/VVelcome_) has a changelog and that I'll try to remember to update. 
 
-I'll also post regular updates, explanations, tutorials, and rants about the state of the world on my TikTok: **[@son_of_pizza](http://tiktok.com/@son_of_pizza)**.
+##### I'll also post regular updates, explanations, tutorials, and rants about the state of the world on my **[Patreon](https://www.patreon.com/vvunderlore)**!
 
 ### Support
 *Hey if you like what's going on here, consider dropping a tip on my Ko-fi. It'll go towards supporting Obsidian plugin architects and TTRPG writers and creators and builders, and affording me more time to put in the work it takes to serve these tools to you. Thanks!*
