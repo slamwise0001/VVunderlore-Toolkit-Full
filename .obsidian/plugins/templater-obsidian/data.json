@@ -32,6 +32,7 @@
     ""
   ],
   "startup_templates": [
-    ""
-  ]
+    "Extras/Templates/_startup_init.md"
+  ],
+  "intellisense_render": 1
 }

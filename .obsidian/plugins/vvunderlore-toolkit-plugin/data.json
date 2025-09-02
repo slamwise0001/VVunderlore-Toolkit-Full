@@ -27,8 +27,8 @@
   "rulesetReference": [],
   "reparseGamesets": true,
   "isFirstRun": "yes",
-  "latestToolkitVersion": "1.1.4",
-  "lastChecked": "2025-09-02T23:06:27.262Z",
+  "latestToolkitVersion": "1.1.5",
+  "lastChecked": "2025-09-02T23:28:56.852Z",
   "fileCache": {
     ".vvunderlore_installed": {
       "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -157,6 +157,18 @@
     "World/Places/EXAMPLE - Tower of Struug Nur.md": {
       "hash": "6f776413a365eb7d04b8784d85c0487526b4776d4384549f7c8825c27642a7b9",
       "githubPath": "World/Places/EXAMPLE - Tower of Struug Nur.md"
+    },
+    "Extras/Toolkit Bases/pc_abilities.base": {
+      "hash": "bed92cc521aa79624173187aece0dbf1c80fd7f38d030f9216b47a9cb0a60698",
+      "githubPath": "Extras/Toolkit Bases/pc_abilities.base"
+    },
+    "Extras/Toolkit Bases/pc_spells.base": {
+      "hash": "a3b0d7ad2a4b51e3bd76e059ef9698931d8fe3d5e2aeea93d2a6f88fa1e18969",
+      "githubPath": "Extras/Toolkit Bases/pc_spells.base"
+    },
+    "Extras/Toolkit Bases/pc_stats.base": {
+      "hash": "8ec93cc9f38587c7bb1b61f0a87e6586238d9bfcf2f3564a72f33b77f1968f02",
+      "githubPath": "Extras/Toolkit Bases/pc_stats.base"
     }
   }
 }
