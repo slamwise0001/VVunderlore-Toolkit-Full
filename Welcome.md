@@ -19,7 +19,7 @@ I'm constantly expanding and evolving this toolkit so I'll try to keep announcem
 ##### I'll also post regular updates, explanations, tutorials, and rants about the state of the world on my **[Patreon](https://www.patreon.com/vvunderlore)**!
 
 ### Support
-*Hey if you like what's going on here, consider dropping a tip on my Ko-fi. It'll go towards supporting Obsidian plugin architects and TTRPG writers and creators and builders, and affording me more time to put in the work it takes to serve these tools to you. Thanks!*
+*Hey if you like what's going on here, consider dropping a tip on my Ko-fi or subscribing to the Patreon (above). It'll go towards supporting Obsidian plugin architects and TTRPG writers and creators and builders, and affording me more time to put in the work it takes to serve these tools to you. Thanks!*
 
 <a href='https://ko-fi.com/F1F31B5WPR' target='_blank'><img height='36' style='border:0px;height:36px;float:left !important;margin-bottom:10px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 <br clear="both">

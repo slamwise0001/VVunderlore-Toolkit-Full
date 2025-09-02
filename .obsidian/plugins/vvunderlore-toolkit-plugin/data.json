@@ -28,7 +28,7 @@
   "reparseGamesets": true,
   "isFirstRun": "yes",
   "latestToolkitVersion": "1.1.4",
-  "lastChecked": "2025-08-21T13:53:49.490Z",
+  "lastChecked": "2025-09-02T23:06:27.262Z",
   "fileCache": {
     ".vvunderlore_installed": {
       "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -91,23 +91,23 @@
       "githubPath": "Extras/Templates/newadventure_template.md"
     },
     "Extras/Templates/newcreature_template.md": {
-      "hash": "2cd2186a49923cd992eee632d7414ce4338485d1e6656bb5b4fada266f5b0ca6",
+      "hash": "6da7567c7759499fae66ccc27fdc128a4bdd930fde9a6b532b1b088dd352bf15",
       "githubPath": "Extras/Templates/newcreature_template.md"
     },
     "Extras/Templates/newitem_template.md": {
-      "hash": "c5f04d200c807866f475a189cf3a85e68c61d31e604b25f599bafca7aaf2bb1c",
+      "hash": "2f72023307af507702647903277dec1c3e3e88eedfd1104aed698c938bdc3171",
       "githubPath": "Extras/Templates/newitem_template.md"
     },
     "Extras/Templates/newplace_template.md": {
-      "hash": "c1a8dfe318fea13daebf33c5a59ec2e4d3296a0196e2e1693007bf4c0f487a84",
+      "hash": "65977aa2bc4750fe06cfd39178fd5e652a33ab7d42d145474950b5a5d205c82e",
       "githubPath": "Extras/Templates/newplace_template.md"
     },
     "Extras/Templates/npc_template.md": {
-      "hash": "a0a9b176e6b1cfea3ee9e5c63e98bdf5e223d9e6bd6bfa06b1fde96b5e5a2a99",
+      "hash": "d788c888eda60a8624b3946e4d7d413bbfee962386baca9a679aa05593002244",
       "githubPath": "Extras/Templates/npc_template.md"
     },
     "Extras/Templates/playercharacter_template.md": {
-      "hash": "b101fb188360e709779bafeb07728bd9c75f7b65b33559b8e3ef4b72e6064b6d",
+      "hash": "7e0a75acd95121df3f93783c4e7b2bf02b44b4071e05499187b454fb35ee0183",
       "githubPath": "Extras/Templates/playercharacter_template.md"
     },
     "Extras/Templates/playerdash_template.md": {
@@ -135,7 +135,7 @@
       "githubPath": "Tools/Vermun the Wandering Trader.md"
     },
     "Welcome.md": {
-      "hash": "740d300b8cba52423c39d37d28679619b18f61a11b95d189b022067c5bba2581",
+      "hash": "c4afdda89685870843c3a5921788567c59c99d84be834fd6159490ce78dca21e",
       "githubPath": "Welcome.md"
     },
     "World/People/Non-Player Characters/Lomin Topplesquirt.md": {

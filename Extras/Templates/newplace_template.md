@@ -1,87 +1,91 @@
 <%*
-const modalForm = app.plugins.plugins.modalforms.api;
-const result = await modalForm.openForm("new-place-form");
-if (!result) {
-  new Notice("Form cancelled.");
-  return;
+const mf = app.plugins.plugins?.modalforms?.api;
+if (!mf) { new Notice("Modal Forms plugin not found."); return; }
+
+// ── cleanup helper for “new + empty” notes ────────────────────────────
+async function cleanupIfBlankNewNote() {
+  try {
+    const cur = app.workspace.getActiveFile();
+    if (cur) {
+      const txt = await app.vault.read(cur);
+      const ageMs = Date.now() - cur.stat.ctime;
+      if (!txt.trim() && ageMs < 15000) await app.vault.delete(cur);
+    }
+  } catch (_) {}
 }
 
-function getFieldAsString(fieldName, defaultValue = "") {
-  let value = result[fieldName];
-  if (!value) {
-    return defaultValue;
-  }
-  return String(value).trim();
-}
+// ── open form ─────────────────────────────────────────────────────────
+const res = await mf.openForm("new-place-form");
+const cancelled =
+  !res ||
+  (typeof res === "object" && Object.keys(res).length === 0) ||
+  res.cancelled === true || res.canceled === true;
 
-function toItemArray(str) {
-  if (!str) return [];
-  return str
-    .split(",")
-    .map(s => s.trim())
-    .filter(s => s.length > 0);
-}
+if (cancelled) { new Notice("Form cancelled."); await cleanupIfBlankNewNote(); return; }
+const result = res;
 
-function toWikiLinkYamlList(str) {
-  const items = toItemArray(str);
-  if (items.length === 0) return "  -";
-  return items.map(item => `  - "[[${item}]]"`).join("\n");
-}
+// ── helpers ───────────────────────────────────────────────────────────
+const getFieldAsString = (k, def="") => {
+  const v = result[k];
+  if (v == null) return def;
+  if (Array.isArray(v)) return v.join(", ");
+  return String(v).trim();
+};
+const arrayify = (val) => {
+  if (!val) return [];
+  if (Array.isArray(val)) return val.map(x => String(x).trim()).filter(Boolean);
+  return String(val).split(",").map(s => s.trim()).filter(Boolean);
+};
+const yamlEscape = (s) => String(s ?? "").replace(/"/g, '\\"');
 
-function toPlainYamlList(str) {
-  const items = toItemArray(str);
-  if (items.length === 0) return "  -";
-  return items.map(item => `  - "${item}"`).join("\n");
-}
+const toWikiLinkYamlList = (val) => {
+  const items = arrayify(val);
+  return items.length ? items.map(i => `  - "[[${yamlEscape(i)}]]"`).join("\n") : "  -";
+};
+const toPlainYamlList = (val) => {
+  const items = arrayify(val);
+  return items.length ? items.map(i => `  - "${yamlEscape(i)}"`).join("\n") : "  -";
+};
+const rawAppears  = result["appearances"] ?? result["appearences"] ?? [];
+const appearsArr  = Array.isArray(rawAppears) ? rawAppears : arrayify(rawAppears);
+const appearsLine = appearsArr.length ? `
+**Appears In:** \`= this.appearances\`` : "";
 
-function toWikiLinkCsv(str) {
-  const items = toItemArray(str);
-  return items.map(item => `[[${item}]]`).join(", ");
-}
+// ── fields ────────────────────────────────────────────────────────────
+let name = getFieldAsString("name");
+if (!name) { await cleanupIfBlankNewNote(); return; }
 
-function toPlainCsv(str) {
-  const items = toItemArray(str);
-  return items.join(", ");
-}
+let type          = getFieldAsString("type");
+let narrativeDesc = getFieldAsString("narrative desc");
+let desc          = getFieldAsString("desc");
+let history       = getFieldAsString("history");
+let location      = getFieldAsString("location");          // <- new single field
+let popSize       = getFieldAsString("population size");
+let climate       = getFieldAsString("climate");
+let denizens      = getFieldAsString("denizens");
+// support either spelling just in case the form still has the old key
+let appearsRaw    = result["appearances"] ?? result["appearences"] ?? "";
 
-let name            = getFieldAsString("name");
-let type            = getFieldAsString("type");
-let narrativeDesc   = getFieldAsString("narrative desc");
-let desc            = getFieldAsString("desc");
-let history         = getFieldAsString("history");
-let world           = getFieldAsString("world");
-let country         = getFieldAsString("country");
-let popSize         = getFieldAsString("population size");
-let climate         = getFieldAsString("climate");
-let denizens        = getFieldAsString("denizens");
-let appearsRaw      = getFieldAsString("appearances");  // Plain list, no wiki links
+// lists
+let denizensYamlList  = toWikiLinkYamlList(denizens);
+let appearsInYamlList = toPlainYamlList(appearsRaw);
 
-let countryYamlList    = toWikiLinkYamlList(country);  // wiki links in frontmatter
-let denizensYamlList   = toWikiLinkYamlList(denizens); // wiki links in frontmatter
-let appearsInYamlList  = toPlainYamlList(appearsRaw);     // plain list in frontmatter
-
+// ── frontmatter ───────────────────────────────────────────────────────
 let frontmatter = `---
-name: "${name}"
-world: "${world}"
-country: "${country}"
-size: "${popSize}"
-type: "${type}"
-climate: "${climate}"
+name: "${yamlEscape(name)}"
+location: "${yamlEscape(location)}"
+size: "${yamlEscape(popSize)}"
+type: "${yamlEscape(type)}"
+climate: "${yamlEscape(climate)}"
 denizens :
 ${denizensYamlList}
 appearances :
 ${appearsInYamlList}
 ---`;
 
-// Build the "Type in Country, World" line dynamically
+// ── body ──────────────────────────────────────────────────────────────
 let locationLine = `***\`= this.type\`***`;
-if (country && world) {
-  locationLine += ` in \`= this.country\`, \`= this.world\``;
-} else if (country) {
-  locationLine += ` in \`= this.country\``;
-} else if (world) {
-  locationLine += ` in \`= this.world\``;
-}
+if (location) locationLine += ` in \`= this.location\``;
 
 let noteBody = `# \`= this.name\`
 ${locationLine}
@@ -95,22 +99,34 @@ ${desc}
 
 ${history}
 
-**Appears In:** \`= this.appearances\`
+${appearsLine}
 `;
 
+// ── write file ────────────────────────────────────────────────────────
 let noteContent = frontmatter + "\n\n" + noteBody;
 
-let fileName = name.endsWith() ? name.slice(0, -3) : name;
-let filePath = `World/Places/${fileName}`;
+const folder = "World/Places";
+async function ensureFolders(path) {
+  const parts = path.split("/");
+  let acc = "";
+  for (const part of parts) {
+    acc = acc ? `${acc}/${part}` : part;
+    if (!(await app.vault.adapter.exists(acc))) {
+      try { await app.vault.createFolder(acc); } catch (_) {}
+    }
+  }
+}
+await ensureFolders(folder);
 
+let fileName = name.trim();
+if (fileName.toLowerCase().endsWith(".md")) fileName = fileName.slice(0, -3);
+
+let filePath = `${folder}/${fileName}`;
 await tp.file.create_new(noteContent, filePath);
-await new Promise(resolve => setTimeout(resolve, 2000));
 
 // open
+await new Promise(r => setTimeout(r, 200));
 let newFile = tp.file.find_tfile(filePath) || app.vault.getAbstractFileByPath(filePath);
-if (newFile) {
-  app.workspace.openLinkText(newFile.basename, newFile.path, true);
-} else {
-  new Notice("File not found: " + filePath);
-}
+if (newFile) app.workspace.openLinkText(newFile.basename, newFile.path, true);
+else new Notice("File not found: " + filePath);
 %>

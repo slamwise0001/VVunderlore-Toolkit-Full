@@ -1,0 +1,58 @@
+filters:
+  and:
+    - file == this.file
+formulas:
+  Untitled: if(((number(strength) - 10) / 2).floor() >= 0, "+" + ((number(strength) - 10) / 2).floor(), ((number(strength) - 10) / 2).floor())
+  DEX: if(((number(dexterity) - 10) / 2).floor() >= 0, "+" + ((number(dexterity) - 10) / 2).floor(), ((number(dexterity) - 10) / 2).floor())
+  CON: if(((number(constitution) - 10) / 2).floor() >= 0, "+" + ((number(constitution) - 10) / 2).floor(), ((number(constitution) - 10) / 2).floor())
+  INT: if(((number(intelligence) - 10) / 2).floor() >= 0, "+" + ((number(intelligence) - 10) / 2).floor(), ((number(intelligence) - 10) / 2).floor())
+  WIS: if(((number(wisdom) - 10) / 2).floor() >= 0, "+" + ((number(wisdom) - 10) / 2).floor(), ((number(wisdom) - 10) / 2).floor())
+  CHA: if(((number(charisma) - 10) / 2).floor() >= 0, "+" + ((number(charisma) - 10) / 2).floor(), ((number(charisma) - 10) / 2).floor())
+properties:
+  formula.Untitled:
+    displayName: STRmod
+  formula.DEX:
+    displayName: DEXmod
+  formula.CON:
+    displayName: CONmod
+  formula.INT:
+    displayName: INTmod
+  formula.WIS:
+    displayName: WISmod
+  formula.CHA:
+    displayName: CHAmod
+  note.strength:
+    displayName: STR
+  note.dexterity:
+    displayName: DEX
+  note.constitution:
+    displayName: CON
+  note.intelligence:
+    displayName: INT
+  note.wisdom:
+    displayName: WIS
+  note.charisma:
+    displayName: CHA
+views:
+  - type: table
+    name: Table
+    order:
+      - strength
+      - formula.Untitled
+      - dexterity
+      - formula.DEX
+      - constitution
+      - formula.CON
+      - intelligence
+      - formula.INT
+      - wisdom
+      - formula.WIS
+      - charisma
+      - formula.CHA
+    sort:
+      - property: formula.Untitled
+        direction: ASC
+    columnSize:
+      formula.Untitled: 86
+      formula.INT: 156
+      formula.WIS: 126

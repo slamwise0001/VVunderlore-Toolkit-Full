@@ -1,0 +1,41 @@
+filters:
+  and:
+    - file.inFolder("Compendium/Spells")
+    - this.note.Spells.contains(file)
+properties:
+  file.name:
+    displayName: Spell
+  note.school:
+    displayName: Spell
+  note.level:
+    displayName: Level
+  note.duration:
+    displayName: Duration
+  note.casting_time:
+    displayName: Casting Time
+  note.range:
+    displayName: Range
+  note.damage_type:
+    displayName: Damage Type
+views:
+  - type: table
+    name: Table
+    order:
+      - file.name
+      - school
+      - level
+      - duration
+      - casting_time
+      - range
+      - damage_type
+    sort:
+      - property: level
+        direction: ASC
+      - property: school
+        direction: ASC
+      - property: damage_type
+        direction: ASC
+      - property: range
+        direction: ASC
+    columnSize:
+      note.school: 86

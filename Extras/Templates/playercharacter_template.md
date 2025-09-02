@@ -7,38 +7,49 @@ if (!dv) {
   return;
 }
 
-const result = await modalForm.openForm("new-player-character");
-if (!result) {
-  new Notice("Player Character creation cancelled.");
+// Cleanup helper for newly-created empty notes (when user cancels)
+async function cleanupIfBlankNewNote() {
+  try {
+    const cur = app.workspace.getActiveFile();
+    if (cur) {
+      const txt = await app.vault.read(cur);
+      const ageMs = Date.now() - cur.stat.ctime;
+      if (!txt.trim() && ageMs < 15000) await app.vault.delete(cur);
+    }
+  } catch (_) {}
+}
+
+// Open the form + robust cancel detection
+const res = await modalForm.openForm("new-player-character");
+const cancelled =
+  !res ||
+  (typeof res === "object" && Object.keys(res).length === 0) ||
+  res.cancelled === true || res.canceled === true;
+
+if (cancelled) {
+  new Notice("Form cancelled.");
+  await cleanupIfBlankNewNote();
   return;
 }
 
-// ─── Helper: Remove all double-asterisks (bold markers) ───────────────
-function removeBold(str) {
-  return str.replace(/\*\*/g, "").trim();
-}
+const result = res;
+let className = String(result.get("pcclass") ?? "").trim();
 
-// ─── Helper: Choose the Correct Subclass ──────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────
+function removeBold(str) { return str.replace(/\*\*/g, "").trim(); }
+
 function getSubclass() {
+  const generic = result.get("subclass");
+  if (generic && String(generic).trim() !== "") {
+    return String(generic).trim();
+  }
   const subclassFields = [
-    "subclass-cleric",
-    "subclass-artificer",
-    "subclass-barbarian",
-    "subclass-Bard",
-    "subclass-Druid",
-    "subclass-Fighter",
-    "subclass-Monk",
-    "subclass-Mystic",
-    "subclass-paladin",
-    "subclass-ranger",
-    "subclass-ranger revised",
-    "subclass-ranger spelless",
-    "subclass-rogue",
-    "subclass-sorcerer",
-    "subclass-warlock",
-    "subclass-wizard"
+    "subclass-cleric","subclass-artificer","subclass-barbarian","subclass-Bard",
+    "subclass-Druid","subclass-Fighter","subclass-Monk","subclass-Mystic",
+    "subclass-paladin","subclass-ranger","subclass-ranger revised",
+    "subclass-ranger spelless","subclass-rogue","subclass-sorcerer",
+    "subclass-warlock","subclass-wizard"
   ];
-
   for (const key of subclassFields) {
     const val = result.get(key);
     if (val && String(val).trim() !== "") {
@@ -49,7 +60,6 @@ function getSubclass() {
 }
 const subclass = getSubclass();
 
-// ─── Helper: Calculate Proficiency Bonus ──────────────────────────────
 function getProficiencyBonus(level) {
   const lvl = Math.max(1, parseInt(level || "1", 10));
   if (lvl <= 4)  return 2;
@@ -59,372 +69,358 @@ function getProficiencyBonus(level) {
   return 6;
 }
 
-// ─── Helper: Process a comma-separated list into a JSON array string ─
 function processList(value) {
   if (!value) return "[]";
-  let items = value.split(",")
-    .map(item => item.trim())
-    .filter(item => item.length > 0);
+  const items = String(value).split(",").map(s=>s.trim()).filter(Boolean);
   return JSON.stringify(items);
 }
 
-// ─── Helper: Convert a string or array to a wiki link ────────────────
-function asWikilink(value) {
-  if (!value) return "";
-  // If Modal Forms is returning an array (e.g. ["Aven"]), flatten it:
-  if (Array.isArray(value)) value = value.join(" "); 
-  const trimmed = value.trim();
-  return trimmed ? `[[${trimmed}]]` : "";
-}
-
+//────────── Yaml lists ───────────────────
 function toYamlList(key, arr) {
- 
-  if (!arr || arr.length === 0) return `${key}: []`;
-  const lines = arr.map(item => `  - "${item}"`).join("\n");
+  function needsQuote(s) {
+    if (s === "" || /^\s|\s$/.test(s)) return true;
+    if (s.startsWith("[[") || s.includes("]]")) return true; // wikilinks
+    if (/[#:,[\]{}&*!?|>'"%@`]/.test(s)) return true;        // YAML specials
+    if (/^(?:y|Y|yes|Yes|n|N|no|No|true|True|false|False|null|Null|~|on|On|off|Off)$/.test(s)) return true;
+    if (/^-?(?:\d+|\d*\.\d+)$/.test(s)) return true;         // numbers
+    return false;
+  }
+  function dq(s) { return `"${s.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`; }
+
+  const list = Array.isArray(arr) ? arr : [];
+  if (!list.length) return `${key}: []`;
+
+  const lines = list
+    .map(v => {
+      const s = String(v ?? "").trim();
+      return `  - ${needsQuote(s) ? dq(s) : s}`;
+    })
+    .join("\n");
+
   return `${key}:\n${lines}`;
 }
 
-
-let name = result.get("Name") ? String(result.get("Name")).trim() : "Unnamed Character";
-if (name.toLowerCase().endsWith(".md")) {
-  name = name.slice(0, -3);
+function normalizeMulti(value) {
+  if (Array.isArray(value)) return value.map(v => String(v).trim()).filter(Boolean);
+  if (value === undefined || value === null) return [];
+  const s = String(value).trim();
+  try {
+    const j = JSON.parse(s);
+    if (Array.isArray(j)) return j.map(v => String(v).trim()).filter(Boolean);
+  } catch (_) {}
+  return s ? s.split(",").map(v => v.trim()).filter(Boolean) : [];
 }
-// 1. Get the user’s Status and normalize it
-let statusValue = result.get("Status") || "";
-statusValue = statusValue.trim().toLowerCase();
 
-// 2. Decide which folder to use based on Status
+async function readTraitsFromFrontmatter(pathCandidates = []) {
+  for (const p of pathCandidates) {
+    const f = app.vault.getAbstractFileByPath(p);
+    if (!f) continue;
+    try {
+      const fm = app.metadataCache.getFileCache(f)?.frontmatter;
+      if (fm && Array.isArray(fm.traits)) {
+        const arr = fm.traits.map(t => String(t).trim()).filter(Boolean);
+        return JSON.stringify(arr);
+      }
+    } catch (_) {}
+  }
+  return "[]";
+}
+
+// Merge multiple JSON-stringified arrays, de-dupe, return JSON string
+function mergeTraitJsonArrays(...jsonArrays) {
+  const out = [];
+  for (const j of jsonArrays) {
+    try {
+      const a = JSON.parse(j || "[]");
+      if (Array.isArray(a)) for (const s of a) if (s && !out.includes(s)) out.push(s);
+    } catch (_) {}
+  }
+  return JSON.stringify(out);
+}
+
+// ─── Name, path, status ───────────────────────────────────────────────
+let nameRaw = String(result.get("Name") ?? "").trim();
+if (!nameRaw) { new Notice("PC creation cancelled."); await cleanupIfBlankNewNote(); return; }
+let name = nameRaw.toLowerCase().endsWith(".md") ? nameRaw.slice(0, -3) : nameRaw;
+
+let statusValue = (result.get("Status") || "").trim().toLowerCase();
 const folder = (statusValue === "inactive") ? "Inactive" : "Active";
-
-// 3. Build the final file path
 const filePath = `World/People/Player Characters/${folder}/${name}`;
 
-
-//  character level and compute proficiency bonus.
+// ─── Calculated stats & lookups ───────────────────────────────────────
 const level = parseInt(result.get("level") || "1", 10);
 const proficiencyBonus = getProficiencyBonus(level);
 
-// ─── Speed from the Chosen Species ───────────────────────────
-let speciesName = result.get("species") ? String(result.get("species")).trim() : "";
+// ─── Initiative ───────────────────────────────────────────────
+function calcMod(score) {
+  return Math.floor((Number(score ?? 10) - 10) / 2);
+}
+function parseBonusNumber(x) {
+  if (x === undefined || x === null) return 0;
+  const m = String(x).trim().match(/-?\d+(\.\d+)?/);
+  return m ? Number(m[0]) : 0;
+}
+function computeInitiative(dexScore, extra) {
+  const bonuses = Array.isArray(extra)
+    ? extra
+    : (extra == null ? [] : [extra]);
+  const extraSum = bonuses.reduce((sum, v) => sum + parseBonusNumber(v), 0);
+  return calcMod(dexScore) + extraSum;
+}
+function signed(n) { return (n >= 0 ? "+" : "") + n; }
+
+const initiativeFinal = computeInitiative(result.get("dexterity"), result.get("initiative"));
+
+// ─── Speed ──────────────────────────────
 let speciesSpeed = "";
-if (speciesName !== "") {
-  try {
-    let speciesPath = `Compendium/Species/${speciesName}.md`;
-    let speciesFile = app.vault.getAbstractFileByPath(speciesPath);
-    if (speciesFile) {
-      let speciesContent = await app.vault.cachedRead(speciesFile);
-      let lines = speciesContent.split("\n");
-      for (let line of lines) {
-        let trimmed = line.trim();
-        if (trimmed.startsWith("- **Speed")) {
-          let rawValue = trimmed.split(":").slice(1).join(":").trim();
-          speciesSpeed = removeBold(rawValue);
-          break;
-        }
-      }
-    } else {
-      new Notice("Species file not found: " + speciesPath);
-    }
-  } catch (e) {
-    new Notice("Error reading species note for " + speciesName + ": " + e.message);
+const speciesName = String(result.get("pcspecies") ?? "").trim();
+if (speciesName) {
+  const candidates = [
+    `Compendium/Player Build/Species/${speciesName}.md`,
+    `Compendium/Player Build/Species/${speciesName}/${speciesName}.md`
+  ];
+  let file = null;
+  for (const p of candidates) {
+    const f = app.vault.getAbstractFileByPath(p);
+    if (f) { file = f; break; }
+  }
+  if (file) {
+    const fm = app.metadataCache.getCache(file.path)?.frontmatter;
+    const s = String((fm?.speed ?? fm?.Speed) ?? "").trim();
+    if (s) speciesSpeed = s;
   }
 }
 
-// ─── Retrieve Proficiencies from the Chosen Class Note ────────────────
 
-let className = result.get("pcclass") ? String(result.get("pcclass")).trim() : "";
-let weaponProficiencies = "";
-let armorProficiencies = "";
-let toolProficiencies = "";
-let stProficiencies = "";
-if (className !== "") {
-  try {
-    let classPath = `Compendium/Classes/${className}/${className}.md`;
-    let classFile = app.vault.getAbstractFileByPath(classPath);
-    if (classFile) {
-      let classContent = await app.vault.cachedRead(classFile);
-      let classLines = classContent.split("\n");
-      for (let line of classLines) {
-        let trimmed = line.trim();
-        if (trimmed.startsWith("**Armor:**")) {
-          let rawArmor = trimmed.split(":").slice(1).join(":").trim();
-          armorProficiencies = processList(removeBold(rawArmor));
-        }
-        if (trimmed.startsWith("**Weapons:**")) {
-          let rawWeapons = trimmed.split(":").slice(1).join(":").trim();
-          weaponProficiencies = processList(removeBold(rawWeapons));
-        }
-        if (trimmed.startsWith("**Tools:**")) {
-          let rawTools = trimmed.split(":").slice(1).join(":").trim();
-          toolProficiencies = processList(removeBold(rawTools));
-        }
-        if (trimmed.startsWith("**Saving Throws:**")) {
-          let rawSaves = trimmed.split(":").slice(1).join(":").trim();
-          stProficiencies = processList(removeBold(rawSaves));
-        }
-      }
-    } else {
-      new Notice("Class file not found: " + classPath);
-    }
-  } catch (e) {
-    new Notice("Error reading class note for " + className + ": " + e.message);
-  }
+// ─── Traits lookups ───────────────────────────────────────────────────
+// Names from the form
+const speciesForm   = (result.get("pcspecies")   || "").toString().trim();
+const raceForm      = (result.get("race")      || "").toString().trim();
+const backgroundForm= (result.get("background")|| "").toString().trim();
+
+// Candidate paths (adjust if your vault uses different folders)
+const speciesTraitPaths    = speciesForm   ? [`Compendium/Player Build/Species/${speciesForm}.md`, `Compendium/Player Build/Species/${speciesForm}/${speciesForm}.md`] : [];
+const raceTraitPaths = (speciesForm && raceForm)? [`Compendium/Player Build/Species/${speciesForm}/Races/${raceForm}.md`] : [];
+const backgroundTraitPaths = backgroundForm? [`Compendium/Player Build/Backgrounds/${backgroundForm}.md`] : [];
+
+// Read traits from each source
+const speciesTraitsJson    = await readTraitsFromFrontmatter(speciesTraitPaths);   // JSON string
+const raceTraitsJson   = await readTraitsFromFrontmatter(raceTraitPaths);      // JSON string
+const backgroundTraitsJson = await readTraitsFromFrontmatter(backgroundTraitPaths);// JSON string
+const speciesRaceTraitsJson = mergeTraitJsonArrays(speciesTraitsJson, raceTraitsJson);
+
+
+// ─── Proficiency readers ──────────────────────────────────────────────
+function arrify(v) {
+  if (Array.isArray(v)) return v.map(x => String(x).trim()).filter(Boolean);
+  if (v === undefined || v === null) return [];
+  const s = String(v).trim();
+  try { const j = JSON.parse(s); if (Array.isArray(j)) return j.map(x => String(x).trim()).filter(Boolean); } catch (_) {}
+  return s ? s.split(",").map(x => x.trim()).filter(Boolean) : [];
 }
 
-// ─── Spells: Parse the Raw JSON and Convert to Wiki-Links ─────────────
+function mergeUniqueArrays(...lists) {
+  const out = [];
+  for (const list of lists) {
+    for (const s of (list || [])) {
+      const t = String(s).trim();
+      if (t && !out.includes(t)) out.push(t);
+    }
+  }
+  return out;
+}
+
+async function firstExistingFile(paths) {
+  for (const p of paths) {
+    const f = app.vault.getAbstractFileByPath(p);
+    if (f) return f;
+  }
+  return null;
+}
+
+async function readProfArrayFrom(paths, key) {
+  const map = {
+    "saving_throws": { fm: ["saving_throws","saving-throws","Saving Throws","savingThrows"], label: "Saving Throws" },
+    "weapon-prof":   { fm: ["weapon-prof","weapons","weapon_proficiencies","weapon-proficiencies","Weapons"], label: "Weapons" },
+    "armor-prof":    { fm: ["armor-prof","armor","armors","armor_proficiencies","armor-proficiencies","Armor"], label: "Armor" },
+    "tool-prof":     { fm: ["tool-prof","tools","tool_proficiencies","tool-proficiencies","Tools"], label: "Tools" },
+  };
+  const conf = map[key];
+  if (!conf) return [];
+
+  const file = await firstExistingFile(paths);
+  if (!file) return [];
+
+  const fm = app.metadataCache.getCache(file.path)?.frontmatter || {};
+  for (const k of conf.fm) {
+    if (fm[k] !== undefined) return arrify(fm[k]);
+  }
+
+  const body = await app.vault.cachedRead(file);
+  const lines = body.split("\n");
+  const rx = new RegExp(`^\\*\\*${conf.label}\\*\\*\\s*:\\s*(.+)$`, "i");
+  for (const raw of lines) {
+    const t = raw.trim();
+    const m = t.match(rx);
+    if (m) return arrify(removeBold(m[1]));
+  }
+  return [];
+}
+
+
+let subclassPath = "";
+if (subclass && className) {
+  subclassPath = `Compendium/Player Build/Classes/${className}/Subclasses/${subclass}.md`;
+}
+
+const classTraitPathCandidates = className ? [
+  `Compendium/Player Build/Classes/${className}/${className}.md`,
+  `Compendium/Player Build/Classes/${className}.md`
+] : [];
+
+const classTraitsJson = await readTraitsFromFrontmatter(classTraitPathCandidates);
+
+const subclassTraitPathCandidates = (subclass && className) ? [
+  `Compendium/Player Build/Classes/${className}/Subclasses/${subclass}.md`
+] : [];
+
+const subclassTraitsJson = await readTraitsFromFrontmatter(subclassTraitPathCandidates);
+
+const classTraitsCombinedJson = mergeTraitJsonArrays(classTraitsJson, subclassTraitsJson);
+
+// ─── Proficiency sources ──────────────────────────────────────────────
+const classPathCandidates = className ? [
+  `Compendium/Player Build/Classes/${className}/${className}.md`,
+  `Compendium/Player Build/Classes/${className}.md`
+] : [];
+
+const speciesPaths = (result.get("pcspecies") || speciesForm) ? [
+  `Compendium/Player Build/Species/${speciesForm || String(result.get("pcspecies")).trim()}.md`,
+  `Compendium/Player Build/Species/${speciesForm || String(result.get("pcspecies")).trim()}/${speciesForm || String(result.get("pcspecies")).trim()}.md`
+] : [];
+
+const racePaths = (speciesForm && raceForm) ? [
+  `Compendium/Player Build/Species/${speciesForm}/Races/${raceForm}.md`
+] : [];
+
+const backgroundPaths = backgroundForm ? [
+  `Compendium/Player Build/Backgrounds/${backgroundForm}.md`
+] : [];
+
+// ─── Read & merge ─────────────────────────────────────────────────────
+const savingThrowsArr = mergeUniqueArrays(
+  await readProfArrayFrom(classPathCandidates, "saving_throws"),
+  await readProfArrayFrom(speciesPaths,        "saving_throws"),
+  await readProfArrayFrom(racePaths,           "saving_throws"),
+  await readProfArrayFrom(backgroundPaths,     "saving_throws")
+);
+
+const weaponProfArr = mergeUniqueArrays(
+  await readProfArrayFrom(classPathCandidates, "weapon-prof"),
+  await readProfArrayFrom(speciesPaths,        "weapon-prof"),
+  await readProfArrayFrom(racePaths,           "weapon-prof"),
+  await readProfArrayFrom(backgroundPaths,     "weapon-prof")
+);
+
+const armorProfArr = mergeUniqueArrays(
+  await readProfArrayFrom(classPathCandidates, "armor-prof"),
+  await readProfArrayFrom(speciesPaths,        "armor-prof"),
+  await readProfArrayFrom(racePaths,           "armor-prof"),
+  await readProfArrayFrom(backgroundPaths,     "armor-prof")
+);
+
+const toolProfArr = mergeUniqueArrays(
+  await readProfArrayFrom(classPathCandidates, "tool-prof"),
+  await readProfArrayFrom(speciesPaths,        "tool-prof"),
+  await readProfArrayFrom(racePaths,           "tool-prof"),
+  await readProfArrayFrom(backgroundPaths,     "tool-prof")
+);
+
+
+// Spells → YAML list (lowercase key)
 const rawSpells = result.get("spells");
-new Notice("Raw spells = " + JSON.stringify(rawSpells));
-
-// Attempt to parse the raw JSON string from the form
 let spellsArray = [];
-try {
-  // rawSpells should be something like: "[\"Absorb Elements\",\"Scrying\"]"
-  if (rawSpells) {
-    spellsArray = JSON.parse(rawSpells);
-  }
-} catch (err) {
-  new Notice("Error parsing spells JSON: " + err.message);
-}
-
-// Convert each spell name into [[Spell]]
+try { if (rawSpells) spellsArray = JSON.parse(rawSpells); } catch {}
 const wikiLinkedSpells = spellsArray.map(spell => `[[${spell}]]`);
-
-// Build the multi-line YAML
 const spellsYaml = toYamlList("Spells", wikiLinkedSpells);
 
-// ─── Build Frontmatter ────────────────────────────────────────────────
+// Skills (convert CSV/inputs to array JSON)
+const skillsJson = processList(result.get("Skill Proficiencies"));
+
+// Multiselects as arrays for YAML lists
+const skillsArr      = normalizeMulti(result.get("Skill Proficiencies"));
+const languagesArr   = normalizeMulti(result.get("Languages"));
+const keyItemsArr    = normalizeMulti(result.get("key_items"));
+const appearencesArr = normalizeMulti(result.get("appearances")); // optional
+
+// ─── Build Frontmatter (NEW SCHEMA) ───────────────────────────────────
 const frontmatter = `---
-hp: ${result.get("hp") || ""}
-ac: ${result.get("ac") || ""}
-modifier: ${result.get("modifier") || ""}
-level: ${result.get("level") || ""}
-Name: ${name}
-Species: "${asWikilink(result.get("species"))}"
-Class: "${asWikilink(result.get("pcclass"))}"
-Subclass: "${asWikilink(subclass)}"
-Alignment: ${result.get("Alignment") || ""}
-Strength: ${result.get("strength") || ""}
-Dexterity: ${result.get("dexterity") || ""}
-Constitution: ${result.get("constitution") || ""}
-Intelligence: ${result.get("intelligence") || ""}
-Wisdom: ${result.get("wisdom") || ""}
-Charisma: ${result.get("charisma") || ""}
-current_hp: ${result.get("current_hp") || ""}
-Armor Class: ${result.get("ac") || ""}
-Speed: ${speciesSpeed}
-Proficiency Bonus: +${proficiencyBonus}
-Skill Proficiencies: ${result.get("Skill Proficiencies") || ""}
-ST Proficiencies: ${stProficiencies}
-Weapon Proficiencies: ${weaponProficiencies}
-Armor Proficiencies: ${armorProficiencies}
-Tool Proficiencies: ${toolProficiencies}
-key_items: ${Array.isArray(result.get("key_items")) ? JSON.stringify(result.get("key_items")) : (result.get("key_items") || "[]")}
-Languages: ${result.get("Languages") || ""}
-
-${spellsYaml}
-
+name: ${name}
 aliases: ${result.get("aliases") || ""}
-appearances: ${Array.isArray(result.get("appearances")) ? JSON.stringify(result.get("appearances")) : (result.get("appearances") || "[]")}
+HP: ${result.get("hp") || ""}
+currentHP: ${result.get("hp") || ""}
+AC: ${result.get("ac") || ""}
+level: ${result.get("level") || ""}
+species: ${result.get("pcspecies") || ""}
+race: ${result.get("race") || ""}
+class: ${result.get("pcclass") || ""}
+subclass: ${subclass || ""}
+background: ${result.get("background") || ""}
+species-traits: ${speciesRaceTraitsJson}
+class-traits: ${classTraitsCombinedJson}
+background-traits: ${backgroundTraitsJson}
+Alignment: ${result.get("Alignment") || ""}
+strength: ${result.get("strength") || ""}
+dexterity: ${result.get("dexterity") || ""}
+constitution: ${result.get("constitution") || ""}
+intelligence: ${result.get("intelligence") || ""}
+wisdom: ${result.get("wisdom") || ""}
+charisma: ${result.get("charisma") || ""}
+iniative: ${signed(initiativeFinal)}
+speed: ${speciesSpeed}
+Proficiency bonus: +${proficiencyBonus}
+${toYamlList('skills', skillsArr)}
+${toYamlList('saving_throws', savingThrowsArr)}
+${toYamlList('weapon-prof',   weaponProfArr)}
+${toYamlList('armor-prof',    armorProfArr)}
+${toYamlList('tool-prof',     toolProfArr)}
+${toYamlList('languages', languagesArr)}
+${spellsYaml}
+${toYamlList('appearences', appearencesArr)}
+key_items: ${Array.isArray(result.get("key_items")) ? JSON.stringify(result.get("key_items")) : (result.get("key_items") || "[]")}
+vermun_credit: 0
+image: ${result.get("pc_picture") || ""}
 ---`;
 
-// ─── Build the Spells Dataview Block ──────────────────────────────────
-const spellBlock = `
-### Spells
-\`\`\`dataviewjs
-// This block renders the spells table from the frontmatter Spells field
-const spells = dv.current().Spells;
-
-if (spells && Array.isArray(spells) && spells.length > 0) {
-  const spellTableData = spells.map(spellItem => {
-    const spellString = typeof spellItem === 'string' ? spellItem : String(spellItem);
-    // Attempt to extract wiki link
-    const match = spellString.match(/^\\[\\[(.*?)\\]\\]$/);
-    if (!match) {
-      return {
-        name: spellString,
-        level: 'N/A',
-        casting_time: 'N/A',
-        range: 'N/A',
-        save: '-'
-      };
-    }
-    let linkPart = match[1];
-    let [rawTarget, displayName] = linkPart.split('|');
-    if (!displayName) {
-      displayName = rawTarget.replace(/\\.md$/i, '').split('/').pop();
-    }
-    rawTarget = rawTarget.replace(/\\.md$/i, '');
-    if (rawTarget.startsWith('/')) {
-      rawTarget = rawTarget.slice(1);
-    }
-    const spellLink = \`<a href='/\${rawTarget}.md' class='internal-link'>\${displayName}</a>\`;
-    const spellPage = dv.page(rawTarget);
-    return {
-      name: spellLink,
-      level: spellPage?.level ?? 'N/A',
-      casting_time: spellPage?.casting_time ?? 'N/A',
-      range: spellPage?.range ?? 'N/A',
-      save: spellPage?.save?.trim() ?? '-'
-    };
-  }).sort((a, b) => {
-    // Attempt to sort by numeric level if possible
-    const levelA = parseInt(a.level, 10) || 0;
-    const levelB = parseInt(b.level, 10) || 0;
-    return levelA - levelB;
-  });
-
-  let tableRows = spellTableData.map(spell => \`
-    <tr>
-      <td style='border: 1px solid #ccc; padding: 5px;'>\${spell.name}</td>
-      <td style='border: 1px solid #ccc; padding: 5px;'>\${spell.level}</td>
-      <td style='border: 1px solid #ccc; padding: 5px;'>\${spell.casting_time}</td>
-      <td style='border: 1px solid #ccc; padding: 5px;'>\${spell.range}</td>
-      <td style='border: 1px solid #ccc; padding: 5px;'>\${spell.save}</td>
-    </tr>
-  \`).join('');
-
-  const tableHTML = \`
-  <table style='width: 100%; border-collapse: collapse;'>
-    <thead>
-      <tr>
-        <th style='border: 1px solid #ccc; padding: 5px;'>Spell</th>
-        <th style='border: 1px solid #ccc; padding: 5px;'>Level</th>
-        <th style='border: 1px solid #ccc; padding: 5px;'>Casting Time</th>
-        <th style='border: 1px solid #ccc; padding: 5px;'>Range</th>
-        <th style='border: 1px solid #ccc; padding: 5px;'>Saving Throw</th>
-      </tr>
-    </thead>
-    <tbody>
-      \${tableRows}
-    </tbody>
-  </table>
-  \`;
-  dv.el('div', tableHTML);
-} else {
-  dv.el('div', 'No spells found.');
-}
-\`\`\`
-`;
-
-// ─── Saving Throws Block ──────────────────────────────────────────────
-const savingThrowBlock = `
-\`\`\`dataviewjs
-const file = dv.current();
-const abilities = ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"];
-const proficiencies = file["ST Proficiencies"] || [];
-const proficiencyBonus = Number(file["Proficiency Bonus"]) || 0;
-
-function calculateModifier(score) {
-  return Math.floor((score - 10) / 2);
-}
-
-const rows = abilities.map(ability => {
-  const value = Number(file[ability]) || 10;
-  const mod = calculateModifier(value);
-  const total = proficiencies.includes(ability) ? mod + proficiencyBonus : mod;
-  return \`| \${ability} | **\${value}** | **+\${mod}** | **+\${total}** |\`;
-});
-
-dv.paragraph(\`
-| Ability      | Value | Modifier | Saving Throw |
-|--------------|-------|----------|--------------|
-\${rows.join("\\n")}
-\`);
-\`\`\`
-`;
-
-// ─── Assemble Note Content (Frontmatter + Unchanged Body) ─────────────
+// ─── Assemble Note Content (NEW BODY) ─────────────────────────────────
 const noteContent = `${frontmatter}
+# ${name}
+*${subclass || ""} ${result.get("pcclass") || ""} - ${result.get("race") || ""} ${result.get("pcspecies") || ""} - ${result.get("Alignment") || ""}*
 
-# \`= this.Name\`
-#### *\`= "Level" + " " +  this.level + " " + this.Species + " " + this.Class + " (" + this.Subclass + ")"\`* 
+### Stats:
+![[pc_stats.base]]
 
-### ⚔️ Combat Stats
-\`\`\`dataviewjs
-const file = dv.current();
-const armorClass = file["ac"] || "N/A";
-const dexterity = file.Dexterity || 10;
-const dexModifier = Math.floor((dexterity - 10) / 2);
-const hpMax = file["hp"] || "0";
+### Abilities:
+![[pc_abilities.base]]
 
-dv.paragraph(\`
-| Armor Class | Initiative | HP |
-|-------------|------------|------------------|
-| **\${armorClass}** | **+\${dexModifier}** | **\${hpMax}** |
-\`);
-\`\`\`
+#### Spells:
+![[pc_spells.base]]
 
-${savingThrowBlock}
-
-### 🧠 Skills & Proficiencies
-\`\`\`dataviewjs
-const skills = {
-  "Acrobatics": "Dexterity", "Animal Handling": "Wisdom", "Arcana": "Intelligence",
-  "Athletics": "Strength", "Deception": "Charisma", "History": "Intelligence",
-  "Insight": "Wisdom", "Intimidation": "Charisma", "Investigation": "Intelligence",
-  "Medicine": "Wisdom", "Nature": "Intelligence", "Perception": "Wisdom",
-  "Performance": "Charisma", "Persuasion": "Charisma", "Religion": "Intelligence",
-  "Sleight of Hand": "Dexterity", "Stealth": "Dexterity", "Survival": "Wisdom"
-};
-const file = dv.current();
-const profSkills = file["Skill Proficiencies"] || [];
-const profBonus = parseInt(String(file["Proficiency Bonus"] || "").replace("+", ""), 10) || 0;
-function calcMod(score) { return Math.floor((score - 10) / 2); }
-let rows = Object.entries(skills).map(([skill, ability]) => {
-  const score = file[ability] || 10;
-  const baseMod = calcMod(score);
-  const totalMod = profSkills.includes(skill) ? baseMod + profBonus : baseMod;
-  const mark = profSkills.includes(skill) ? "⭐" : "";
-  return \`| \${skill} | **+\${totalMod}** | \${mark} |\`;
-});
-dv.paragraph(\`
-| Skill            | Modifier | Proficient |
-|------------------|----------|------------|
-\${rows.join("\\n")}
-\`);
-\`\`\`
-
-### ✨ Spells
-${spellBlock}
-
-### 🪕 Key Items
-\`= this.key_items\`
-
-### 👤 Personal Details
-**Status:** NaN  
-**Height:** NaN m  
-**Weight:** NaN kg  
-**Background:** NaN  
-**Gender:** NaN  
-**Birthday:** NaN
-
+## Character Details:
 ---
-#### Appearance
-*Physical description, notable features, and anything special about the character's appearance.*
+### History:
 
-#### Personality Traits
-*Key traits, motivations, and quirks.*
+### Personality:
 
-#### Backstory
-*Character backstory, origins, and any important life events.*
+### Bonds/Goals
 
-#### Current Story Threads
-*Active missions or ongoing plotlines.*
+### Open Plot Threads:
 
-#### Goals & Ambitions
-*Long-term character goals or aspirations.*
+### Relationships:
 
-#### Allies & Enemies
-*Important allies, NPCs, or enemies.*
-
-#### Notes
-*Anything else worth remembering.*
-
-#### Fun Facts!
-*Quirky details about your character.*
+### Fun Facts:
 `;
 
-// ─── Create the File ──────────────────────────────────────────────────
 await tp.file.create_new(noteContent, filePath);
 await new Promise(resolve => setTimeout(resolve, 2000));
 let newFile = tp.file.find_tfile(filePath) || app.vault.getAbstractFileByPath(filePath);
@@ -435,37 +431,16 @@ if (newFile) {
 }
 
 async function createSecondFileFromTemplate(playerName) {
-  // 1) Locate the second template file by name/path:
   const secondTemplateTFile = tp.file.find_tfile("Extras/Templates/playerdash_template");
   if (!secondTemplateTFile) {
     new Notice("Second template not found: Templates/playerdash_template");
     return;
   }
-
-  // 2) Read the entire template as a string:
   let secondTemplateContent = await app.vault.read(secondTemplateTFile);
-
-  // 3) Replace any placeholder in that second template, e.g. {{PlayerName}}
-  //    with the actual 'playerName' we already have.
   secondTemplateContent = secondTemplateContent.replace(/{{PlayerName}}/g, name);
-
-  // 4) Decide where the new note should go:
-  //    Adjust this path/folder name to suit your vault structure.
   const secondFilePath = `Extras/PC Dashboards/dash-${name}`;
-
-  // 5) Create the new file using the Templater function:
   await tp.file.create_new(secondTemplateContent, secondFilePath);
-
   new Notice(`Created extra file for ${name}`);
 }
-
-// Finally, actually call that function, passing in the new character's name:
 await createSecondFileFromTemplate(name);
 %>
-
-
-
-
-
-
-

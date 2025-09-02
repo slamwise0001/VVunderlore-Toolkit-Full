@@ -1,0 +1,34 @@
+properties:
+  note.level:
+    displayName: Level
+  note.currentHP:
+    displayName: Current HP
+  note.HP:
+    displayName: Max HP
+  note.speed:
+    displayName: Speed
+  note.languages:
+    displayName: Languages
+views:
+  - type: table
+    name: Table
+    filters:
+      and:
+        - file == this.file
+    order:
+      - level
+      - AC
+      - currentHP
+      - HP
+      - speed
+      - Alignment
+      - languages
+    sort:
+      - property: iniative
+        direction: DESC
+      - property: speed
+        direction: ASC
+      - property: HP
+        direction: ASC
+      - property: currentHP
+        direction: ASC

@@ -1,118 +1,105 @@
-<%* //REMOVE THE SPACE BEFORE THE % TO MAKE IT GO
-// Access the ModalForms API
-const modalForm = app.plugins.plugins.modalforms.api;
-const result = await modalForm.openForm('new-item-form');
+<%*
+const mf = app.plugins.plugins.modalforms?.api;
+if (!mf) { new Notice("Modal Forms plugin not found."); return; }
 
-// Abort if the form was cancelled
-if (!result) {
+// Cleanup helper for newly-created empty notes (when user cancels)
+async function cleanupIfBlankNewNote() {
+  try {
+    const cur = app.workspace.getActiveFile();
+    if (cur) {
+      const txt = await app.vault.read(cur);
+      const ageMs = Date.now() - cur.stat.ctime; // creation age
+      if (!txt.trim() && ageMs < 15000) await app.vault.delete(cur); // trash if enabled
+    }
+  } catch (_) {}
+}
+
+// Open the form + robust cancel detection
+const res = await mf.openForm('new-item-form');
+const cancelled =
+  !res ||
+  (typeof res === "object" && Object.keys(res).length === 0) ||
+  res.cancelled === true || res.canceled === true;
+
+if (cancelled) {
   new Notice("Form cancelled.");
+  await cleanupIfBlankNewNote();
   return;
 }
 
-// Process the 'magical' toggle
+const result = res; // alias for the rest
+
+// Guard against blank item name (prevents "Untitled Item")
+const safeItemName = (result.itemName ?? "").toString().trim();
+if (!safeItemName) {
+  new Notice("Item creation cancelled");
+  await cleanupIfBlankNewNote();
+  return;
+}
+
 let magicalToggle = String(result.magical).toLowerCase();
-let magicalValue = (magicalToggle === "yes" || magicalToggle === "true") ? "true" : "false";
+let magicalValue  = (magicalToggle === "yes" || magicalToggle === "true") ? "true" : "false";
 
-// Process the attunement toggle
 let attunementToggle = String(result.attunement).toLowerCase();
-let attunementLine = (attunementToggle === "yes" || attunementToggle === "true") ? "**Requires attunement.**" : "";
+let attunementLine   = (attunementToggle === "yes" || attunementToggle === "true") ? "**Requires attunement.**" : "";
+let vermunToggle = String(result.vermun).toLowerCase();
 
-// Define finalItemType, subItem, and displayType based on magical status
+const cap = (s) => (typeof s === "string" && s.length) ? s.charAt(0).toUpperCase() + s.slice(1) : "";
+
 let finalItemType = "";
 let subItem = "";
 let displayType = "";
 
 if (magicalValue === "true") {
-    // For magical items, use the magicalitemtype field directly.
-    finalItemType = (result.magicalitemtype ? String(result.magicalitemtype) : "").trim();
-    // For magical items, just display the final item type.
-    displayType = finalItemType;
+  finalItemType = (result.magicalitemtype ?? "").toString().trim();
+
+  if (finalItemType === "Armor") {
+    subItem = cap((result.marmortype ?? "").toString().trim());        // light|medium|heavy
+  } else if (finalItemType === "Weapon") {
+    subItem = cap((result.mweapontype ?? "").toString().trim());       // simple|martial
+  }
+
+  displayType = finalItemType || "Magical Item";
 } else {
-    // For non-magical items, use the itemtype field.
-    let rawItemType = (result.itemtype ? String(result.itemtype) : "").trim();
-    // Convert folder-path values to friendly labels.
-    const typeMapping = {
-       "Compendium/Items/Tools": "Tool",
-       "Compendium/Items/Instruments": "Instrument"
-    };
-    if (rawItemType in typeMapping) {
-        finalItemType = typeMapping[rawItemType];
-    } else {
-        finalItemType = rawItemType;
-    }
-    
-    // For types with conditional questions, extract the subtype from the corresponding field.
-    if (["Consumable", "Valuable", "Gear", "Weapon", "Armor"].includes(finalItemType)) {
-       let fieldValue = "";
-       if (finalItemType === "Consumable") {
-         fieldValue = (result.consumable ? String(result.consumable) : "").trim();
-       } else if (finalItemType === "Valuable") {
-         fieldValue = (result.valuable ? String(result.valuable) : "").trim();
-       } else if (finalItemType === "Gear") {
-         fieldValue = (result.gear ? String(result.gear) : "").trim();
-       } else if (finalItemType === "Weapon") {
-         fieldValue = (result.weapon ? String(result.weapon) : "").trim();
-       } else if (finalItemType === "Armor") {
-         fieldValue = (result.armor ? String(result.armor) : "").trim();
-       }
-       if (fieldValue && fieldValue.includes("/")) {
-         let parts = fieldValue.split("/");
-         subItem = parts[parts.length - 1].trim();
-       } else {
-         subItem = fieldValue;
-       }
-    }
-    
-    // Determine displayType:
-    // For Weapon, Armor, or Gear, always use finalItemType.
-    // For the others, if a conditional sub-item exists, use that; otherwise, fall back to finalItemType.
-    if (["Weapon", "Armor", "Gear"].includes(finalItemType)) {
-         displayType = finalItemType;
-    } else {
-         displayType = subItem ? subItem : finalItemType;
-    }
+  finalItemType = (result.itemtype ?? "").toString().trim();
+
+  if (finalItemType === "Armor") {
+    subItem = cap((result.armortype ?? "").toString().trim());
+  } else if (finalItemType === "Weapon") {
+    subItem = cap((result.weapontype ?? "").toString().trim());
+  }
+
+  displayType = finalItemType || "Item";
 }
 
-// Determine the final destination folder (folderPath)
-let folderPath = "";
-if (magicalValue === "true") {
-    folderPath = result.folder;
-} else {
-    let rawItemType = (result.itemtype ? String(result.itemtype) : "").trim();
-    let destinationFolder = "";
-    if (rawItemType.includes("/")) {
-        destinationFolder = rawItemType;
-    } else {
-        if (rawItemType === "Consumable" && result.consumable) {
-            destinationFolder = String(result.consumable).trim();
-        } else if (rawItemType === "Valuable" && result.valuable) {
-            destinationFolder = String(result.valuable).trim();
-        } else if (rawItemType === "Gear" && result.gear) {
-            destinationFolder = String(result.gear).trim();
-        } else if (rawItemType === "Weapon" && result.weapon) {
-            destinationFolder = String(result.weapon).trim();
-        } else if (rawItemType === "Armor" && result.armor) {
-            destinationFolder = String(result.armor).trim();
-        }
-    }
-    if (!destinationFolder) {
-         destinationFolder = "Compendium/Items/Homebrew Items";
-    }
-    folderPath = destinationFolder;
-}
+let folderPath = (magicalValue === "true")
+  ? "Compendium/Items/Homebrew Items/Magical"
+  : "Compendium/Items/Homebrew Items/Mundane";
 
-// Build the frontmatter
+async function ensureFolders(path) {
+  const parts = path.split("/");
+  let acc = "";
+  for (const part of parts) {
+    acc = acc ? `${acc}/${part}` : part;
+    if (!(await app.vault.adapter.exists(acc))) {
+      try { await app.vault.createFolder(acc); } catch (_) {}
+    }
+  }
+}
+await ensureFolders(folderPath);
+
+// FRONTMATTER (unchanged)
 let frontmatter = `---
-owned: false
-shopkeep: false
-price: ${result.price}
+name: ${result.itemName}
+type: ${result.itemtype}
+rarity: ${result.rarity}
+cost: ${result.price}
 magical: ${magicalValue}
 attunement: ${(attunementToggle === "yes" || attunementToggle === "true") ? "true" : "false"}
+vermun: ${(vermunToggle === "yes" || attunementToggle === "true") ? "true" : "false"}
 itemType: "${finalItemType}"
-subtype: "${subItem}"
 ---`;
 
-// Build the main note body (layout unchanged)
 let noteBody = `
 # ${result.itemName}
 
@@ -123,36 +110,27 @@ let noteBody = `
 ${result.details}
 `;
 
-// Process attribution safely
-let attributionStr = "";
-if (result.attribution != null) {
-    attributionStr = String(result.attribution).trim();
-}
-let attributionBlock = "";
-if (attributionStr.length > 0) {
-    attributionBlock = `
----
-Source: *${attributionStr}*`;
-}
+// Optional attribution footer (unchanged)
+let attributionStr = result.attribution != null ? String(result.attribution).trim() : "";
+let attributionBlock = attributionStr.length > 0 ? `
 
-// Assemble the final note content
+---
+Source: *${attributionStr}*` : "";
+
 let noteContent = `${frontmatter}
 
-${noteBody}
-${attributionBlock}
+${noteBody}${attributionBlock}
 `;
 
-// Define the file name
-let fileName = (result.itemName ? String(result.itemName) : "Untitled Item").trim();
-if (fileName.toLowerCase().endsWith(".md")) {
-    fileName = fileName.slice(0, -3);
-}
-let notePath = `${folderPath}/${fileName}`;
+// File name + create + open
+let fileName = safeItemName; // we already validated it's non-empty
+if (fileName.toLowerCase().endsWith(".md")) fileName = fileName.slice(0, -3);
 
-// Create the new file
+let notePath = `${folderPath}/${fileName}`;
 await tp.file.create_new(noteContent, notePath);
-await new Promise(resolve => setTimeout(resolve, 2000));
-let newFile = tp.file.find_tfile(notePath) || app.vault.getAbstractFileByPath(notePath);
+
+await new Promise(r => setTimeout(r, 200));
+const newFile = tp.file.find_tfile(notePath) || app.vault.getAbstractFileByPath(notePath);
 if (newFile) {
   app.workspace.openLinkText(newFile.basename, newFile.path, true);
 } else {

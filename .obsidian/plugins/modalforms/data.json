@@ -746,7 +746,7 @@
         {
           "name": "itemName",
           "label": "Item Name",
-          "description": "Make it a good one",
+          "description": "",
           "isRequired": true,
           "input": {
             "type": "text",
@@ -756,7 +756,7 @@
         {
           "name": "narrativeDesc",
           "label": "Narrative Description",
-          "description": "A brief description that doesn't give too much away",
+          "description": "Some flavor text",
           "isRequired": false,
           "input": {
             "type": "textarea",
@@ -766,7 +766,7 @@
         {
           "name": "details",
           "label": "Item Description",
-          "description": "and details!",
+          "description": "Weapon description and details",
           "isRequired": true,
           "input": {
             "type": "textarea",
@@ -848,16 +848,12 @@
                 "label": ""
               },
               {
-                "value": "Weapon",
-                "label": "Weapon"
-              },
-              {
                 "value": "Armor",
                 "label": "Armor"
               },
               {
-                "value": "Potion",
-                "label": "Potion"
+                "value": "Weapon",
+                "label": "Weapon"
               },
               {
                 "value": "Ring",
@@ -876,6 +872,10 @@
                 "label": "Staff"
               },
               {
+                "value": "Potion",
+                "label": "Potion"
+              },
+              {
                 "value": "Wand",
                 "label": "Wand"
               },
@@ -887,26 +887,55 @@
           }
         },
         {
-          "name": "folder",
-          "label": "Item Home",
-          "description": "Homebrew or just magical?",
+          "name": "marmortype",
+          "label": "Armor Type",
+          "description": "What type of armor?",
           "isRequired": false,
           "condition": {
-            "dependencyName": "magical",
-            "type": "boolean",
-            "value": true
+            "dependencyName": "magicalitemtype",
+            "type": "isExactly",
+            "value": "Armor"
           },
           "input": {
             "type": "select",
             "source": "fixed",
             "options": [
               {
-                "value": "Compendium/Items/Homebrew Items",
-                "label": "Homebrew"
+                "value": "light",
+                "label": "Light Armor"
               },
               {
-                "value": "Compendium/Items/Magical Items",
-                "label": "Magical"
+                "value": "medium",
+                "label": "Medium Armor"
+              },
+              {
+                "value": "heavy",
+                "label": "Heavy Armor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mweapontype",
+          "label": "Weapon Type",
+          "description": "What type of weapon?",
+          "isRequired": false,
+          "condition": {
+            "dependencyName": "magicalitemtype",
+            "type": "isExactly",
+            "value": "Weapon"
+          },
+          "input": {
+            "type": "select",
+            "source": "fixed",
+            "options": [
+              {
+                "value": "simple",
+                "label": "Simple Weapon"
+              },
+              {
+                "value": "martial",
+                "label": "Martial Weapon"
               }
             ]
           }
@@ -930,23 +959,15 @@
                 "label": ""
               },
               {
-                "value": "Consumable",
-                "label": "Consumable"
-              },
-              {
-                "value": "Valuable",
-                "label": "Valuable"
-              },
-              {
                 "value": "Gear",
                 "label": "Gear"
               },
               {
-                "value": "Compendium/Items/Tools",
+                "value": "Tool",
                 "label": "Tool"
               },
               {
-                "value": "Compendium/Items/Instruments",
+                "value": "Instrument",
                 "label": "Instrument"
               },
               {
@@ -956,122 +977,34 @@
               {
                 "value": "Armor",
                 "label": "Armor"
-              }
-            ]
-          }
-        },
-        {
-          "name": "consumable",
-          "label": "Consumable",
-          "description": "What type of consumable is it?",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "itemtype",
-            "type": "isExactly",
-            "value": "Consumable"
-          },
-          "input": {
-            "type": "select",
-            "source": "fixed",
-            "options": [
+              },
               {
-                "value": "Compendium/Items/Consumables/Potions",
+                "value": "Game",
+                "label": "Game"
+              },
+              {
+                "value": "Food",
+                "label": "Food"
+              },
+              {
+                "value": "Potion",
                 "label": "Potion"
               },
               {
-                "value": "Compendium/Items/Consumables/Food",
-                "label": "Food"
+                "value": "Valuable",
+                "label": "Valuable"
+              },
+              {
+                "value": "Trade Good",
+                "label": "Trade Good"
               }
             ]
           }
         },
         {
-          "name": "valuable",
-          "label": "Valuable Type",
-          "description": "What type of valuable is it?",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "itemtype",
-            "type": "isExactly",
-            "value": "Valuable"
-          },
-          "input": {
-            "type": "select",
-            "source": "fixed",
-            "options": [
-              {
-                "value": "Compendium/Items/Valuables/Gems",
-                "label": "Gems"
-              },
-              {
-                "value": "Compendium/Items/Valuables/Trade Goods",
-                "label": "Trade Goods"
-              }
-            ]
-          }
-        },
-        {
-          "name": "gear",
-          "label": "Gear",
-          "description": "What type of gear is it?",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "itemtype",
-            "type": "isExactly",
-            "value": "Gear"
-          },
-          "input": {
-            "type": "select",
-            "source": "fixed",
-            "options": [
-              {
-                "value": "Compendium/Items/Gear/Mounts and Vehicles",
-                "label": "Mount or Vehicle"
-              },
-              {
-                "value": "Compendium/Items/Gear",
-                "label": "Other"
-              }
-            ]
-          }
-        },
-        {
-          "name": "weapon",
-          "label": "Weapon type",
-          "description": "What class of weapon is it?",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "itemtype",
-            "type": "isExactly",
-            "value": "Weapon"
-          },
-          "input": {
-            "type": "select",
-            "source": "fixed",
-            "options": [
-              {
-                "value": "Compendium/Items/Weapons and Armor/Weapons/Simple",
-                "label": "Simple"
-              },
-              {
-                "value": "Compendium/Items/Weapons and Armor/Weapons/Martial",
-                "label": "Martial"
-              },
-              {
-                "value": "Compendium/Items/Weapons and Armor/Weapons/Ammunition",
-                "label": "Ammunition"
-              },
-              {
-                "value": "Compendium/Items/Weapons and Armor/Weapons/Variant",
-                "label": "Varient (Minor Magic, +1s, etc)"
-              }
-            ]
-          }
-        },
-        {
-          "name": "armor",
+          "name": "armortype",
           "label": "Armor Type",
-          "description": "What type of armor is it?",
+          "description": "What type of armor?",
           "isRequired": false,
           "condition": {
             "dependencyName": "itemtype",
@@ -1083,24 +1016,41 @@
             "source": "fixed",
             "options": [
               {
-                "value": "Compendium/Items/Weapons and Armor/Armor",
-                "label": "Sheild"
+                "value": "light",
+                "label": "Light Armor"
               },
               {
-                "value": "Compendium/Items/Weapons and Armor/Armor/Light",
-                "label": "Light"
+                "value": "medium",
+                "label": "Medium Armor"
               },
               {
-                "value": "Compendium/Items/Weapons and Armor/Armor/Medium",
-                "label": "Medium"
+                "value": "heavy",
+                "label": "Heavy Armor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "weapontype",
+          "label": "Weapon Type",
+          "description": "What type of weapon?",
+          "isRequired": false,
+          "condition": {
+            "dependencyName": "itemtype",
+            "type": "isExactly",
+            "value": "Weapon"
+          },
+          "input": {
+            "type": "select",
+            "source": "fixed",
+            "options": [
+              {
+                "value": "simple",
+                "label": "Simple Weapon"
               },
               {
-                "value": "Compendium/Items/Weapons and Armor/Armor/Heavy",
-                "label": "Heavy"
-              },
-              {
-                "value": "Compendium/Items/Weapons and Armor/Armor/Variant",
-                "label": "Varient (Minor Magic, +1s, etc)"
+                "value": "martial",
+                "label": "Martial Weapon"
               }
             ]
           }
@@ -1109,6 +1059,21 @@
           "name": "attunement",
           "label": "Attunement",
           "description": "Does this item require attunement?",
+          "isRequired": false,
+          "condition": {
+            "dependencyName": "magical",
+            "type": "boolean",
+            "value": true
+          },
+          "input": {
+            "type": "toggle",
+            "hidden": false
+          }
+        },
+        {
+          "name": "vermun",
+          "label": "Vermun",
+          "description": "Should this item appear in Vermun's shop?",
           "isRequired": false,
           "condition": {
             "dependencyName": "magical",
@@ -1141,7 +1106,7 @@
           "name": "Name",
           "label": "Name",
           "description": "What is the name of this NPC",
-          "isRequired": true,
+          "isRequired": false,
           "input": {
             "type": "text",
             "hidden": false
@@ -1155,7 +1120,7 @@
           "input": {
             "type": "multiselect",
             "source": "dataview",
-            "query": "Array.from(new Set(\n    dv.pages().filter(p => p.file.folder.startsWith(\"Adventures/\"))\n    .map(p => p.file.folder.split(\"/\")[1]) // Extract first-level folder\n)).sort();",
+            "query": "Array.from(new Set(\n  dv.pages()\n    .where(p => p.file.path.startsWith(\"Adventures/\"))\n    .map(p => p.file.folder)\n    .filter(f => f.startsWith(\"Adventures/\"))\n    .map(f => f.slice(\"Adventures/\".length).split(\"/\")[0])\n    .filter(Boolean)\n)).sort()",
             "allowUnknownValues": false
           }
         },
@@ -1175,8 +1140,10 @@
           "description": "Does this NPC go by any nicknames or aliases? (comma separated)",
           "isRequired": false,
           "input": {
-            "type": "text",
-            "hidden": false
+            "type": "multiselect",
+            "source": "fixed",
+            "multi_select_options": [],
+            "allowUnknownValues": true
           }
         },
         {
@@ -1185,8 +1152,10 @@
           "description": "Who are their closest affiliates? (comma separated)",
           "isRequired": false,
           "input": {
-            "type": "text",
-            "hidden": false
+            "type": "multiselect",
+            "source": "dataview",
+            "query": "dv.pages('\"World/People/Non-Player Characters\"')\n  .map(p => p.file.name)\n  .sort()\n  .array()",
+            "allowUnknownValues": true
           }
         },
         {
@@ -1195,9 +1164,10 @@
           "description": "Is this NPC associated with any known organization?",
           "isRequired": false,
           "input": {
-            "type": "select",
-            "source": "notes",
-            "folder": "World/People/Factions"
+            "type": "multiselect",
+            "source": "dataview",
+            "query": "Array.from(new Set(\n    dv.pages().filter(p => p.file.path.startsWith(\"World/People/Factions\"))\n    .flatMap(p => p.file.folder.split(\"/\").slice(3).concat(p.file.name)) // Get all folder levels + note name\n)).sort();",
+            "allowUnknownValues": true
           }
         },
         {
@@ -1207,7 +1177,7 @@
           "isRequired": false,
           "input": {
             "type": "dataview",
-            "query": "Array.from(new Set(\n    dv.pages().filter(p => p.file.path.startsWith(\"Places/\"))\n    .flatMap(p => p.file.folder.split(\"/\").slice(1).concat(p.file.name)) // Get all folder levels + note name\n)).sort();"
+            "query": "Array.from(new Set(\n    dv.pages().filter(p => p.file.path.startsWith(\"World/Places/\"))\n    .flatMap(p => p.file.folder.split(\"/\").slice(1).concat(p.file.name)) // Get all folder levels + note name\n)).sort();"
           }
         },
         {
@@ -1268,9 +1238,8 @@
           "description": "What class is this NPC (if any)?",
           "isRequired": false,
           "input": {
-            "type": "select",
-            "source": "notes",
-            "folder": "Compendium/Classes"
+            "type": "dataview",
+            "query": "Array.from(new Set(\n  dv.pages()\n    .filter(p => p.file.path.startsWith(\"Compendium/Player Build/Classes\"))\n    .flatMap(p => p.file.folder.split(\"/\").slice(3))\n))\n.sort();"
           }
         },
         {
@@ -1279,9 +1248,8 @@
           "description": "What species is this NPC?",
           "isRequired": false,
           "input": {
-            "type": "select",
-            "source": "notes",
-            "folder": "Compendium/Species"
+            "type": "dataview",
+            "query": "Array.from(new Set(\n  dv.pages()\n    .filter(p => p.file.path.startsWith(\"Compendium/Player Build/Species\"))\n    .flatMap(p => {\n      const parts = p.file.folder.split(\"/\");\n      const target = \"Compendium/Player Build/Species\";\n      // If the page lives directly in Species, return its filename…\n      if (p.file.folder === target) {\n        return [p.file.name];\n      }\n      // …otherwise return only the immediate subfolder name\n      return [parts[3]];\n    })\n))\n.sort();"
           }
         },
         {
@@ -1298,11 +1266,27 @@
         {
           "name": "Stats",
           "label": "Stats",
-          "description": "Does this NPC need a stat block made?",
+          "description": "Does this NPC need a stat block?",
           "isRequired": false,
           "input": {
             "type": "toggle",
             "hidden": false
+          }
+        },
+        {
+          "name": "npc_level",
+          "label": "Level",
+          "description": "What \"level\" is this NPC at (for the purpose of randomizing stats etc)",
+          "isRequired": false,
+          "condition": {
+            "dependencyName": "Stats",
+            "type": "boolean",
+            "value": true
+          },
+          "input": {
+            "type": "slider",
+            "min": 1,
+            "max": 20
           }
         },
         {
@@ -1379,10 +1363,6 @@
               {
                 "value": "Construct",
                 "label": "Construct "
-              },
-              {
-                "value": "Gargantuan",
-                "label": "Gargantuan"
               },
               {
                 "value": "Elemental",
@@ -1777,60 +1757,15 @@
           }
         },
         {
-          "name": "narrative desc",
-          "label": "Narrative Decription",
-          "description": "How would you describe this place to your players?",
-          "isRequired": false,
-          "input": {
-            "type": "textarea",
-            "hidden": false
-          }
-        },
-        {
-          "name": "desc",
-          "label": "Description",
-          "description": "What's this place all about?",
-          "isRequired": false,
-          "input": {
-            "type": "textarea",
-            "hidden": false
-          }
-        },
-        {
-          "name": "history",
-          "label": "History",
-          "description": "What's the history of this location?",
-          "isRequired": false,
-          "input": {
-            "type": "textarea",
-            "hidden": false
-          }
-        },
-        {
-          "name": "world",
-          "label": "World",
-          "description": "What planet or plane of existence is this place on?",
-          "isRequired": false,
-          "input": {
-            "type": "text",
-            "hidden": false
-          }
-        },
-        {
-          "name": "country",
-          "label": "Country",
-          "description": "What controlled region is this place in?",
-          "isRequired": false,
-          "input": {
-            "type": "text",
-            "hidden": false
-          }
-        },
-        {
           "name": "population size",
           "label": "Population Size",
           "description": "Roughly how big is this place.",
           "isRequired": false,
+          "condition": {
+            "dependencyName": "type",
+            "type": "isExactly",
+            "value": "Town"
+          },
           "input": {
             "type": "select",
             "source": "fixed",
@@ -1871,6 +1806,56 @@
           }
         },
         {
+          "name": "narrative desc",
+          "label": "Narrative Decription",
+          "description": "How would you describe this place to your players?",
+          "isRequired": false,
+          "input": {
+            "type": "textarea",
+            "hidden": false
+          }
+        },
+        {
+          "name": "desc",
+          "label": "Description",
+          "description": "What's this place all about?",
+          "isRequired": false,
+          "input": {
+            "type": "textarea",
+            "hidden": false
+          }
+        },
+        {
+          "name": "history",
+          "label": "History",
+          "description": "What's the history of this location?",
+          "isRequired": false,
+          "input": {
+            "type": "textarea",
+            "hidden": false
+          }
+        },
+        {
+          "name": "location",
+          "label": "Location",
+          "description": "Where does this place exist? This can be a country, world, dimension, district, region, etc.",
+          "isRequired": false,
+          "input": {
+            "type": "text",
+            "hidden": false
+          }
+        },
+        {
+          "name": "denizens",
+          "label": "Known Denizens",
+          "description": "Any NPCs or PCs that would be found here? (comma separated)",
+          "isRequired": false,
+          "input": {
+            "type": "text",
+            "hidden": false
+          }
+        },
+        {
           "name": "climate",
           "label": "Climate",
           "description": "What's the weather like?",
@@ -1903,19 +1888,9 @@
           }
         },
         {
-          "name": "denizens",
-          "label": "Known Denizens",
-          "description": "Any NPCs or PCs that would be found here? (comma separated)",
-          "isRequired": false,
-          "input": {
-            "type": "text",
-            "hidden": false
-          }
-        },
-        {
-          "name": "appearences",
+          "name": "appearances",
           "label": "Appears In",
-          "description": "I this place featured in any adventures?",
+          "description": "Is this place featured in any adventures?",
           "isRequired": false,
           "input": {
             "type": "multiselect",
@@ -1954,10 +1929,21 @@
           }
         },
         {
+          "name": "pc_picture",
+          "label": "Character Image",
+          "description": "Must be in your vault! You can always add one later.",
+          "isRequired": false,
+          "input": {
+            "type": "image",
+            "filenameTemplate": "{{date}}",
+            "saveLocation": "Extras/Images/Player Characters"
+          }
+        },
+        {
           "name": "level",
           "label": "Level",
           "description": "Enter the character's level",
-          "isRequired": false,
+          "isRequired": true,
           "input": {
             "type": "number",
             "hidden": false
@@ -2016,330 +2002,53 @@
           }
         },
         {
-          "name": "species",
+          "name": "pcspecies",
           "label": "Species",
-          "description": "Enter the character's species",
+          "description": "Choose a species (pulled from your Compendium)",
+          "isRequired": true,
+          "input": {
+            "type": "dataview",
+            "query": "dv.array(dv.pages('\\\"Compendium/Player Build/Species\\\"').map(p => (p.file.folder === 'Compendium/Player Build/Species' ? p.file.name : p.file.path.split('/')[3])).filter(Boolean)).distinct().sort()"
+          }
+        },
+        {
+          "name": "race",
+          "label": "Race / Sub-species",
+          "description": "Populated by the selected species (leave empty if none exist)",
           "isRequired": false,
           "input": {
-            "type": "select",
-            "source": "notes",
-            "folder": "Compendium/Species"
+            "type": "dataview",
+            "query": "form.pcspecies ? dv.pages(`\"Compendium/Player Build/Species/${form.pcspecies}/Races\"`).map(p => p.file.name).sort() : []"
           }
         },
         {
           "name": "pcclass",
           "label": "Class",
-          "description": "Enter the character's class",
-          "isRequired": false,
+          "description": "Choose a class (pulled from your Compendium)",
+          "isRequired": true,
           "input": {
-            "type": "select",
-            "source": "fixed",
-            "options": [
-              {
-                "value": "Artificer",
-                "label": "Artificer"
-              },
-              {
-                "value": "Barbarian",
-                "label": "Barbarian"
-              },
-              {
-                "value": "Bard",
-                "label": "Bard"
-              },
-              {
-                "value": "Cleric",
-                "label": "Cleric"
-              },
-              {
-                "value": "Druid",
-                "label": "Druid"
-              },
-              {
-                "value": "Fighter",
-                "label": "Fighter"
-              },
-              {
-                "value": "Monk",
-                "label": "Monk"
-              },
-              {
-                "value": "Mystic",
-                "label": "Mystic"
-              },
-              {
-                "value": "Paladin",
-                "label": "Paladin"
-              },
-              {
-                "value": "Ranger",
-                "label": "Ranger"
-              },
-              {
-                "value": "Ranger (Revised)",
-                "label": "Ranger (Revised)"
-              },
-              {
-                "value": "Ranger (Spell-less)",
-                "label": "Ranger (Spell-less)"
-              },
-              {
-                "value": "Rogue",
-                "label": "Rogue"
-              },
-              {
-                "value": "Sorcerer",
-                "label": "Sorcerer"
-              },
-              {
-                "value": "Warlock",
-                "label": "Warlock"
-              },
-              {
-                "value": "Wizard",
-                "label": "Wizard"
-              }
-            ]
+            "type": "dataview",
+            "query": "Array.from(new Set(dv.pages('\"Compendium/Player Build/Classes\"').map(p => (p.file.folder.match(/Compendium\\/Player Build\\/Classes\\/([^\\/]+)/)||[])[1]).filter(Boolean))).sort()"
           }
         },
         {
-          "name": "subclass-cleric",
+          "name": "subclass",
           "label": "Subclass",
-          "description": "Enter the character's subclass",
+          "description": "Populated by the selected class (leave empty if none exist)",
           "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "isExactly",
-            "value": "Cleric"
-          },
           "input": {
             "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Cleric/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
+            "query": "form.pcclass ? dv.pages(`\"Compendium/Player Build/Classes/${form.pcclass}/Subclasses\"`).map(p => p.file.name).sort() : []"
           }
         },
         {
-          "name": "subclass-artificer",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
+          "name": "background",
+          "label": "Background",
+          "description": "Choose a background",
           "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "isExactly",
-            "value": "Artificer"
-          },
           "input": {
             "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Artificer/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
-          }
-        },
-        {
-          "name": "subclass-barbarian",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "isExactly",
-            "value": "Barbarian"
-          },
-          "input": {
-            "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Barbarian/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
-          }
-        },
-        {
-          "name": "subclass-Bard",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "isExactly",
-            "value": "Bard"
-          },
-          "input": {
-            "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Bard/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
-          }
-        },
-        {
-          "name": "subclass-Druid",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "isExactly",
-            "value": "Druid"
-          },
-          "input": {
-            "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Druid/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
-          }
-        },
-        {
-          "name": "subclass-Fighter",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "isExactly",
-            "value": "Fighter"
-          },
-          "input": {
-            "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Fighter/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
-          }
-        },
-        {
-          "name": "subclass-Monk",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "isExactly",
-            "value": "Monk"
-          },
-          "input": {
-            "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Monk/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
-          }
-        },
-        {
-          "name": "subclass-Mystic",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "isExactly",
-            "value": "Mystic"
-          },
-          "input": {
-            "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Mystic/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
-          }
-        },
-        {
-          "name": "subclass-paladin",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "isExactly",
-            "value": "Paladin"
-          },
-          "input": {
-            "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Paladin/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
-          }
-        },
-        {
-          "name": "subclass-ranger",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "isExactly",
-            "value": "Ranger"
-          },
-          "input": {
-            "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Ranger/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
-          }
-        },
-        {
-          "name": "subclass-ranger revised",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "contains",
-            "value": "Revised"
-          },
-          "input": {
-            "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Ranger (Revised)/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
-          }
-        },
-        {
-          "name": "subclass-ranger spelless",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "contains",
-            "value": "Spell-less"
-          },
-          "input": {
-            "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Ranger (Spell-less)/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
-          }
-        },
-        {
-          "name": "subclass-rogue",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "startsWith",
-            "value": "Rogue"
-          },
-          "input": {
-            "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Rogue/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
-          }
-        },
-        {
-          "name": "subclass-sorcerer",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "startsWith",
-            "value": "Sorcerer"
-          },
-          "input": {
-            "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Sorcerer/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
-          }
-        },
-        {
-          "name": "subclass-warlock",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "startsWith",
-            "value": "Warlock"
-          },
-          "input": {
-            "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Warlock/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
-          }
-        },
-        {
-          "name": "subclass-wizard",
-          "label": "Subclass",
-          "description": "Enter the character's subclass",
-          "isRequired": false,
-          "condition": {
-            "dependencyName": "pcclass",
-            "type": "startsWith",
-            "value": "Wizard"
-          },
-          "input": {
-            "type": "dataview",
-            "query": "dv.pages('\"Compendium/Classes/Wizard/Sub-classes\"')\n  .map(p => p.file.name)\n  .sort();"
+            "query": "dv.pages('\\\"Compendium/Player Build/Backgrounds\\\"').map(p => p.file.name).sort()"
           }
         },
         {
@@ -2472,7 +2181,24 @@
           "input": {
             "type": "multiselect",
             "source": "fixed",
-            "multi_select_options": [],
+            "multi_select_options": [
+              "Common",
+              "Dwarvish",
+              "Elvish",
+              "Giant",
+              "Gnomish",
+              "Goblin",
+              "Halfling",
+              "Orc",
+              "Abyssal",
+              "Celestial",
+              "Deep Speech",
+              "Draconic",
+              "Infernal",
+              "Primordial",
+              "Sylvan",
+              "Under Common"
+            ],
             "allowUnknownValues": true
           }
         },
@@ -2483,9 +2209,8 @@
           "isRequired": false,
           "input": {
             "type": "multiselect",
-            "source": "fixed",
-            "multi_select_options": [],
-            "allowUnknownValues": true
+            "source": "notes",
+            "folder": "Compendium/Items"
           }
         },
         {
@@ -2517,11 +2242,6 @@
           "label": "Appears In",
           "description": "What adventure(s) is this player in?",
           "isRequired": false,
-          "condition": {
-            "dependencyName": "Status",
-            "type": "isExactly",
-            "value": "Active"
-          },
           "input": {
             "type": "multiselect",
             "source": "dataview",

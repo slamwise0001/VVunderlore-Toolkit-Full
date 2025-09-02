@@ -8,20 +8,6 @@
         "type": "tabs",
         "children": [
           {
-            "id": "a3efd5e8c266eefd",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "README.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "README"
-            }
-          },
-          {
             "id": "fd40de867caebdf5",
             "type": "leaf",
             "state": {
@@ -35,8 +21,7 @@
               "title": "Welcome"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -196,6 +181,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "bases:Create new base": false,
       "modalforms:Edit forms": false,
       "templater-obsidian:Templater": false,
       "switcher:Open quick switcher": false,
@@ -206,45 +192,46 @@
       "command-palette:Open command palette": false,
       "table-editor-obsidian:Advanced Tables Toolbar": false,
       "obsidian-5e-statblocks:Open Creature pane": false,
-      "initiative-tracker:Initiative Tracker Encounter Builder": false
+      "initiative-tracker:Initiative Tracker Encounter Builder": false,
+      "omnisearch:Omnisearch": false
     }
   },
-  "active": "fd40de867caebdf5",
+  "active": "7a8417feed5c0df5",
   "lastOpenFiles": [
-    "README.md",
+    "Adventures/Omninomicon.md",
     "Welcome.md",
+    "Extras/Toolkit Bases/pc_stats.base",
+    "pc_stats.base",
+    "Extras/Templates/newadventure_template.md",
+    "Toolkit Bases/pc_spells.base",
+    "Toolkit Bases/pc_stats.base",
+    "Toolkit Bases/pc_abilities.base",
+    "Toolkit Bases",
+    "Extras/Toolkit Bases",
+    "Extras/Templates/encounter_template.md",
+    "Extras/Templates/playerdash_template.md",
+    "Extras/Templates/playercharacter_template.md",
+    "Extras/Templates/statblock_template.md",
+    "Extras/Templates/npc_template.md",
+    "Extras/Templates/newplace_template.md",
+    "Extras/Templates/newitem_template.md",
+    "Extras/Templates/newcreature_template.md",
+    "Compendium/Classes/Cleric/Cleric.md",
+    "README.md",
     "Resources/Rulesets",
     "Resources/Untitled.md",
-    "Extras/Templates/playercharacter_template.md",
     "Compendium/Items/Homebrew Items/Wand of Templating.md",
     "World/History",
     "World/Untitled.md",
-    "Adventures/Omninomicon.md",
-    "Extras/Templates/newadventure_template.md",
     "Extras/Templates/base_sessiontemplate.md",
     "Tools/Party Overview.md",
     "World/People/Player Characters/Active/Chixlum the Handsy.md",
-    "Extras/Templates/playerdash_template.md",
     "Extras/PC Dashboards/dash-Burrata Ensalada.md",
     "Extras/PC Dashboards/dash-Chixlum the Handsy.md",
     "Extras/PC Dashboards/dash-Munch Tippledew.md",
     "Tools",
     "Extras/PC Dashboards/dash-Butt LaFleur.md",
     "World/People/Player Characters/Active/Butt LaFleur.md",
-    "World/People/Player Characters/Inactive/Burrata Ensalada.md",
-    "Compendium/Bestiary/Homebrew/Test Beast.md",
-    "Extras/Templates/newcreature_template.md",
-    "Extras/Templates/npc_template.md",
-    "World/People/Player Characters/Active/Munch Tippledew.md",
-    "Extras/Templates/statblock_template.md",
-    "World/People/Player Characters/Active/sdfsdf.md",
-    "Compendium/Items/Magical Items/Ring of Invisibility.md",
-    "Adventures/Cool Fun For Everyone/Adventure",
-    "Adventures/Cool Fun For Everyone/Materials",
-    "Adventures/The Testing of VVunderlore/Session Notes",
-    "Adventures/Cool Fun For Everyone/Session Notes",
-    "Adventures/The Testing of VVunderlore/Materials",
-    "Adventures/The Testing of VVunderlore/Adventure",
-    "Adventures/Cool Fun For Everyone"
+    "World/People/Player Characters/Inactive/Burrata Ensalada.md"
   ]
 }
