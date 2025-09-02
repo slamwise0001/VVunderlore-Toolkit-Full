@@ -180,17 +180,6 @@
       ]
     },
     {
-      "path": "Extras/Templates/encounter_template.md",
-      "optional": false,
-      "key": "extras-templates-encounter_template",
-      "displayName": "Encounter Template",
-      "requires": [
-        "extras",
-        "extras-templates",
-        ""
-      ]
-    },
-    {
       "path": "Extras/Templates/newadventure_template.md",
       "optional": false,
       "key": "extras-templates-newadventure_template",
@@ -234,9 +223,9 @@
       "requires": [
         "extras",
         "extras-templates",
+        "world-places",
         "",
-        "world",
-        "world-places"
+        "world"
       ]
     },
     {
@@ -261,6 +250,7 @@
       "requires": [
         "extras",
         "extras-templates",
+        "tools",
         "",
         "extras-templates-playerdash_template",
         "extras-pc dashboards",
@@ -304,6 +294,36 @@
         "extras",
         "extras-templates",
         ""
+      ]
+    },
+    {
+      "path": "Extras/Toolkit Bases/pc_abilities.base",
+      "optional": false,
+      "key": "extras-toolkit bases-pc_abilities",
+      "displayName": "Pc Abilities",
+      "requires": [
+        "extras",
+        "extras-toolkit bases"
+      ]
+    },
+    {
+      "path": "Extras/Toolkit Bases/pc_spells.base",
+      "optional": false,
+      "key": "extras-toolkit bases-pc_spells",
+      "displayName": "Pc Spells",
+      "requires": [
+        "extras",
+        "extras-toolkit bases"
+      ]
+    },
+    {
+      "path": "Extras/Toolkit Bases/pc_stats.base",
+      "optional": false,
+      "key": "extras-toolkit bases-pc_stats",
+      "displayName": "Pc Stats",
+      "requires": [
+        "extras",
+        "extras-toolkit bases"
       ]
     },
     {
@@ -546,6 +566,15 @@
       "optional": false,
       "key": "extras-templates",
       "displayName": "Templates",
+      "requires": [
+        "extras"
+      ]
+    },
+    {
+      "path": "Extras/Toolkit Bases",
+      "optional": false,
+      "key": "extras-toolkit bases",
+      "displayName": "Toolkit Bases",
       "requires": [
         "extras"
       ]
