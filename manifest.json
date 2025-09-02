@@ -151,6 +151,16 @@
       ]
     },
     {
+      "path": "Extras/Templates/_startup_init.md",
+      "optional": false,
+      "key": "extras-templates-_startup_init",
+      "displayName": " Startup Init",
+      "requires": [
+        "extras",
+        "extras-templates"
+      ]
+    },
+    {
       "path": "Extras/Templates/(The Testing of VVunderlore)sessiontemplate.md",
       "optional": true,
       "key": "extras-templates-(the testing of vvunderlore)sessiontemplate",
