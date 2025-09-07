@@ -198,8 +198,9 @@
   },
   "active": "fd40de867caebdf5",
   "lastOpenFiles": [
-    "Extras/Templates/_startup_init.md",
+    "Extras/Toolkit Bases/pc_spells.base",
     "Welcome.md",
+    "Extras/Templates/_startup_init.md",
     "Adventures/Omninomicon.md",
     "Extras/Toolkit Bases/pc_stats.base",
     "pc_stats.base",
@@ -232,7 +233,6 @@
     "Extras/PC Dashboards/dash-Munch Tippledew.md",
     "Tools",
     "Extras/PC Dashboards/dash-Butt LaFleur.md",
-    "World/People/Player Characters/Active/Butt LaFleur.md",
-    "World/People/Player Characters/Inactive/Burrata Ensalada.md"
+    "World/People/Player Characters/Active/Butt LaFleur.md"
   ]
 }

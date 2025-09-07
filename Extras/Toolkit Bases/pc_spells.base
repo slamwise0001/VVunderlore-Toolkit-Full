@@ -24,6 +24,7 @@ views:
       - file.name
       - school
       - level
+      - saving_throws
       - duration
       - casting_time
       - range
