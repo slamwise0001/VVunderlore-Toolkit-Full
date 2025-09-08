@@ -16,8 +16,9 @@ async function cleanupIfBlankNewNote() {
   } catch (_) {}
 }
 
-// Open the form (Map-aware cancel detection)
-const res = await modalForm.openForm("new-npc-form");
+const seedName = (tp.file?.title || "").replace(/\.(md|markdown)$/i, "");
+const res = await modalForm.openForm("new-npc-form", { values: { Name : seedName } });
+
 const isMap = !!res && typeof res === "object" && typeof res.get === "function";
 const explicitCanceled = isMap
   ? (res.get("canceled") === true || res.get("cancelled") === true)

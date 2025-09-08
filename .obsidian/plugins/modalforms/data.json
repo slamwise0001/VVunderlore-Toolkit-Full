@@ -17,6 +17,16 @@
             "type": "date",
             "hidden": false
           }
+        },
+        {
+          "name": "sessionName",
+          "label": "Session Name",
+          "description": "Something cool, like \"The Unopenable Unlocked Door\".",
+          "isRequired": false,
+          "input": {
+            "type": "text",
+            "hidden": false
+          }
         }
       ],
       "version": "1"
@@ -1935,7 +1945,7 @@
           "isRequired": false,
           "input": {
             "type": "image",
-            "filenameTemplate": "{{date}}",
+            "filenameTemplate": "playerpic-{{datetime}}",
             "saveLocation": "Extras/Images/Player Characters"
           }
         },

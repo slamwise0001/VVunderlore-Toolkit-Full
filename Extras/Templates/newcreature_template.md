@@ -15,7 +15,9 @@ async function cleanupIfBlankNewNote() {
 }
 
 // Open the form + robust cancel detection
-const res = await mf.openForm("new-creature");
+const seedName = (tp.file?.title || "").replace(/\.(md|markdown)$/i, "");
+const res = await mf.openForm("new-creature", { values: { name : seedName } });
+
 const cancelled =
   !res ||
   (typeof res === "object" && Object.keys(res).length === 0) ||

@@ -9,6 +9,8 @@ properties:
     displayName: Speed
   note.languages:
     displayName: Languages
+  note.current_hp:
+    displayName: Current HP
 views:
   - type: table
     name: Table
@@ -18,17 +20,21 @@ views:
     order:
       - level
       - AC
-      - currentHP
+      - current_hp
       - HP
       - speed
       - Alignment
       - languages
     sort:
+      - property: current_hp
+        direction: ASC
+      - property: currentHP
+        direction: ASC
       - property: iniative
         direction: DESC
       - property: speed
         direction: ASC
       - property: HP
         direction: ASC
-      - property: currentHP
-        direction: ASC
+    columnSize:
+      note.Alignment: 134

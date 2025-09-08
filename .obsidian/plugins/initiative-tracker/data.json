@@ -88,7 +88,7 @@
   "version": [
     13,
     0,
-    16
+    17
   ],
   "canUseDiceRoll": false,
   "preferStatblockLink": false,
@@ -125,6 +125,7 @@
   "rpgSystem": "dnd5e",
   "logging": false,
   "logFolder": "/",
+  "resolveTies": "playerFirst",
   "useLegacy": false,
   "diplayPlayerHPValues": true,
   "rollHP": false,

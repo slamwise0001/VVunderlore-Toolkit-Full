@@ -15,7 +15,9 @@ async function cleanupIfBlankNewNote() {
 }
 
 // ── open form ─────────────────────────────────────────────────────────
-const res = await mf.openForm("new-place-form");
+const seedName = (tp.file?.title || "").replace(/\.(md|markdown)$/i, "");
+const res = await mf.openForm("new-place-form", { values: { name : seedName } });
+
 const cancelled =
   !res ||
   (typeof res === "object" && Object.keys(res).length === 0) ||

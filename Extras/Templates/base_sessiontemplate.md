@@ -2,7 +2,8 @@
 Doc Lock: false
 Adventure: ${adventureName}
 Location: 
-session: 
+session:
+session_name:
 session_date: 
 day: 
 month: 
@@ -216,30 +217,149 @@ actions:
 // ------------------------
 // Session Template with Modal Form Date Entry
 // ------------------------
+const __createdFile = app.workspace.getActiveFile();
+const __createdPath = __createdFile?.path || "";
+const __createdCTime = __createdFile?.stat?.ctime || Date.now();
 
-// 1. Define the folder path and scan for existing session notes
-const folderPath = `Adventures/${adventureName}/Session Notes`; // Adjust if needed
+// Cleanup ONLY this just-created note, and ONLY if it still looks like an "Untitled" stub
+async function __cleanupThisNewNoteOnly(maxAgeMs = 60 * 1000) {
+  try {
+    if (!__createdPath) return;
+    const f = app.vault.getAbstractFileByPath(__createdPath);
+    if (!f) return;
+
+    const ageMs = Date.now() - __createdCTime;
+    const base = f.name || "";
+    const looksUntitled = /^Untitled(?: \d+)?\.md$/i.test(base);
+
+    if (ageMs <= maxAgeMs && looksUntitled) {
+      await app.vault.delete(f);
+    }
+  } catch (_) { }
+}
+
+async function cleanupIfNewSessionNote(targetFolderPath, maxAgeMs = 5 * 60 * 1000) {
+  try {
+    const cur = app.workspace.getActiveFile();
+    if (!cur) return;
+    const ageMs = Date.now() - cur.stat.ctime;
+    if (ageMs <= maxAgeMs && cur.path.startsWith(`${targetFolderPath}/`)) {
+      await app.vault.delete(cur);
+    }
+  } catch (_) { }
+}
+
+// Recursively find the first non-empty string for any of the given keys
+function __pickStringDeep(obj, keys) {
+  if (!obj || typeof obj !== "object") return "";
+  for (const k of keys) {
+    const v = obj[k];
+    if (typeof v === "string" && v.trim()) return v.trim();
+  }
+  for (const v of Object.values(obj)) {
+    if (v && typeof v === "object") {
+      const found = __pickStringDeep(v, keys);
+      if (found) return found;
+    }
+  }
+  return "";
+}
+
+function __pickDateDeep(obj) {
+  if (!obj || typeof obj !== "object") return null;
+  if (obj instanceof Date) return obj;
+  for (const [k, v] of Object.entries(obj)) {
+    if (k === "date") return v;
+  }
+  for (const v of Object.values(obj)) {
+    if (v && typeof v === "object") {
+      const found = __pickDateDeep(v);
+      if (found != null) return found;
+    }
+  }
+  return null;
+}
+
+async function __getSessionTitlePreference() {
+  const PID = "vvunderlore-toolkit-plugin";
+  // Try live plugin instance
+  try {
+    const inst = app.plugins.getPlugin?.(PID) || app.plugins.plugins?.[PID];
+    const v = inst?.settings?.sessionTitlePreference;
+    if (v === "name" || v === "date") return v;
+    // Legacy boolean fallback
+    const legacy = inst?.settings?.preferNameWhenBoth;
+    if (typeof legacy === "boolean") return legacy ? "name" : "date";
+  } catch (_) {}
+
+  // Fallback: read data.json on disk
+  try {
+    const txt = await app.vault.adapter.read(`.obsidian/plugins/${PID}/data.json`);
+    const j = JSON.parse(txt);
+    const v2 = j?.sessionTitlePreference ?? j?.settings?.sessionTitlePreference;
+    if (v2 === "name" || v2 === "date") return v2;
+    const legacy2 = j?.preferNameWhenBoth ?? j?.settings?.preferNameWhenBoth;
+    if (typeof legacy2 === "boolean") return legacy2 ? "name" : "date";
+  } catch (_) {}
+
+  // Safe default
+  return "name";
+}
+
+const folderPath = `Adventures/${adventureName}/Session Notes`;
 const folder = app.vault.getAbstractFileByPath(folderPath);
 const files = folder ? folder.children.filter(f => f.extension === "md") : [];
-const filePattern = /Session (\d+) - (\d{1,2})\.(\d{1,2})\.(\d{2})/;  // Matches "Session X - mm.dd.yy"
+
+// Flexible parser for dates (supports M.D.YY / M.D.YYYY / ISO)
+function __parseDateFlexible(s) {
+  if (!s) return null;
+  if (s instanceof Date) return s;
+  s = String(s).trim();
+  if (!s) return null;
+
+  // ISO yyyy-mm-dd
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+    const [y, m, d] = s.split("-").map(n => parseInt(n, 10));
+    return new Date(y, m - 1, d);
+  }
+  // M.D.YY or M.D.YYYY (also / or -)
+  const m = s.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})$/);
+  if (m) {
+    let y = parseInt(m[3], 10);
+    if (y < 100) y = 2000 + y;
+    return new Date(y, parseInt(m[1], 10) - 1, parseInt(m[2], 10));
+  }
+  return null;
+}
 
 let maxSessionNumber = 0;
 let latestSessionDate = null;
-files.forEach(file => {
-  const match = file.name.match(filePattern);
-  if (match) {
-    const sessionNumber = parseInt(match[1]);
-    const month = match[2];
-    const day = match[3];
-    const year = `20${match[4]}`;  // Convert yy to full year
-    if (sessionNumber > maxSessionNumber) {
-      maxSessionNumber = sessionNumber;
-      latestSessionDate = new Date(`${year}-${month}-${day}`);
-    }
-  }
-});
 
-// 2. Determine a suggested date: if a previous session exists, add 7 days; otherwise, today + 7.
+// Count ANY “Session N - …” title for numbering,
+// and find the newest date using frontmatter (preferred) or filename fallback.
+for (const file of files) {
+  const base = file.basename; // no .md
+  const mNum = base.match(/^Session\s+(\d+)\b/i);
+  if (mNum) {
+    const n = parseInt(mNum[1], 10);
+    if (n > maxSessionNumber) maxSessionNumber = n;
+  }
+
+  // Prefer a saved date from frontmatter
+  const fm = app.metadataCache.getFileCache(file)?.frontmatter || {};
+  let dateStr = fm?.session_date || fm?.date || "";
+
+  // Fallback: parse a trailing date in the filename
+  if (!dateStr) {
+    const mDate = base.match(/(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})$/);
+    if (mDate) dateStr = `${mDate[1]}.${mDate[2]}.${mDate[3]}`;
+  }
+
+  const d = __parseDateFlexible(dateStr);
+  if (d && (!latestSessionDate || d > latestSessionDate)) latestSessionDate = d;
+}
+
+// Suggested date = latest non-empty session date + 7 days, otherwise today + 7
 let suggestedDate = "";
 if (latestSessionDate) {
   const nextDate = new Date(latestSessionDate);
@@ -251,39 +371,90 @@ if (latestSessionDate) {
   suggestedDate = `${today.getMonth() + 1}.${today.getDate()}.${String(today.getFullYear()).slice(-2)}`;
 }
 
-// 3. Calculate the next session number
+// Next session number is now correct even if some titles use names
 const nextSessionNumber = maxSessionNumber + 1;
+
 
 // 4. Open the modal form for date entry (ID "next-session-date" with field "date")
 const modalForm = app.plugins.plugins.modalforms.api;
 const sessionResult = await modalForm.openForm("next-session-date");
-if (!sessionResult) {
-  new Notice("Form cancelled.");
+const cancelled =
+  !sessionResult ||
+  (typeof sessionResult === "object" && Object.keys(sessionResult).length === 0) ||
+  sessionResult.cancelled === true || sessionResult.canceled === true;
+
+if (cancelled) {
+  await __cleanupThisNewNoteOnly();
+  new Notice("New session cancelled.");
   return;
 }
 
-// Retrieve the date as a string; if empty, use the suggested date.
-// Also, if the input appears in ISO format (YYYY-MM-DD), convert it.
-let sessionDateInput = String(sessionResult.date || "").trim();
-if (!sessionDateInput) {
-  sessionDateInput = suggestedDate;
-} else if (sessionDateInput.includes("-")) {
-  let parts = sessionDateInput.split("-");
-  let year = parseInt(parts[0]);
-  let month = parseInt(parts[1]); // Month is 1-indexed in the input.
-  let day = parseInt(parts[2]);
-  // Create the date using local time.
-  let d = new Date(year, month - 1, day);
-  sessionDateInput = `${d.getMonth() + 1}.${d.getDate()}.${d.getFullYear().toString().slice(-2)}`;
+
+// Accept either date or sessionName (or both). Only cancel if both are blank.
+let sessionName = __pickStringDeep(sessionResult, [
+  "sessionName", "session_name", "name", "title", "label", "session_label"
+]);
+
+// Normalize date from the form (accept Date, number epoch, or string; search nested)
+let sessionDate = "";
+let rawDate = ("date" in (sessionResult || {})) ? sessionResult.date : __pickDateDeep(sessionResult);
+
+if (rawDate instanceof Date) {
+  const y = rawDate.getFullYear(), m = rawDate.getMonth() + 1, d = rawDate.getDate();
+  sessionDate = `${m}.${d}.${String(y).slice(-2)}`;
+} else if (typeof rawDate === "number" && isFinite(rawDate)) {
+  const d = new Date(rawDate);
+  const y = d.getFullYear(), m = d.getMonth() + 1, dd = d.getDate();
+  sessionDate = `${m}.${dd}.${String(y).slice(-2)}`;
+} else if (typeof rawDate === "string") {
+  const s = rawDate.trim();
+  if (s) {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+      const [yy, mm, dd] = s.split("-").map(n => parseInt(n, 10));
+      const d = new Date(yy, mm - 1, dd);
+      sessionDate = `${d.getMonth() + 1}.${d.getDate()}.${String(d.getFullYear()).slice(-2)}`;
+    } else if (/^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$/.test(s)) {
+      const parts = s.split(/[./-]/).map(n => parseInt(n, 10));
+      let [m, d, y] = parts; if (y < 100) y = 2000 + y;
+      sessionDate = `${m}.${d}.${String(y).slice(-2)}`;
+    }
+  }
 }
 
-let sessionDate = sessionDateInput;  // Now in the format M.D.YY
+const haveName = !!sessionName;
+const haveDate = !!sessionDate;
 
-// 5. Rename the active note to "Session X - M.D.YY"
-const newTitle = `Session ${nextSessionNumber} - ${sessionDate}`;
+if (!haveName && !haveDate) {
+  await __cleanupThisNewNoteOnly();
+  new Notice("No date or name provided—session creation cancelled.");
+  return;
+}
+
+// Sanitize for filenames
+if (haveName) sessionName = sessionName.replace(/[\\/:*?"<>|]/g, "").trim();
+
+// Prefer Name or Date when both provided, based on plugin setting
+const pref = await __getSessionTitlePreference();
+
+let chosenLabel = "";
+if (haveName && haveDate) {
+  chosenLabel = (pref === "name") ? sessionName : sessionDate;
+} else if (haveName) {
+  chosenLabel = sessionName;
+} else {
+  chosenLabel = sessionDate;
+}
+
+if (!chosenLabel || !nextSessionNumber) {
+  await __cleanupThisNewNoteOnly();
+  return;
+}
+
+
+
+const newTitle = `Session ${nextSessionNumber} - ${chosenLabel}`;
 await tp.file.rename(newTitle);
 
-// 6. Once all templates are executed, update the frontmatter and run extraction/insertion code.
 tp.hooks.on_all_templates_executed(async () => {
   const file = app.workspace.getActiveFile();
   if (!file) {
@@ -291,13 +462,13 @@ tp.hooks.on_all_templates_executed(async () => {
     return;
   }
 
-  // Update frontmatter with session number and date
   await app.fileManager.processFrontMatter(file, (frontmatter) => {
     frontmatter["session"] = nextSessionNumber;
     frontmatter["session_date"] = sessionDate;
+    frontmatter["session_name"] = sessionName;
   });
 
-  // --- Begin Extraction and Insertion Code ---
+  // --- Begin [[Extraction]] and Insertion Code ---
   let previousNote = null;
   let previousNoteContent = "";
 
@@ -326,7 +497,7 @@ tp.hooks.on_all_templates_executed(async () => {
   } else {
     console.log("No previous session exists.");
   }
-// Extract summary from the previous note and update the "Summary Temp" note.
+  // Extract summary from the previous note and update the "Summary Temp" note.
   const summaryRegex = /### ☑️ Summary\s*\n([\s\S]*?)(?=\n##### Takeaways)/;
   const summaryMatch = previousNoteContent.match(summaryRegex);
   if (summaryMatch) {

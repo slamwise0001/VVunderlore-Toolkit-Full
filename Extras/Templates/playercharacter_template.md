@@ -20,7 +20,10 @@ async function cleanupIfBlankNewNote() {
 }
 
 // Open the form + robust cancel detection
-const res = await modalForm.openForm("new-player-character");
+
+const seedName = (tp.file?.title || "").replace(/\.(md|markdown)$/i, "");
+const res = await modalForm.openForm("new-player-character", { values: { Name : seedName } });
+
 const cancelled =
   !res ||
   (typeof res === "object" && Object.keys(res).length === 0) ||
@@ -36,6 +39,77 @@ const result = res;
 let className = String(result.get("pcclass") ?? "").trim();
 
 // ─── Helpers ──────────────────────────────────────────────────────────
+function asLink(v) {
+  if (!v) return "";
+  const raw =
+    typeof v === "string" ? v :
+    v?.name || (v?.basename && v?.extension ? `${v.basename}.${v.extension}` : v?.path || "");
+  if (!raw) return "";
+  const s = String(raw).trim();
+  if (/^\[\[.*\]\]$/.test(s)) return s;
+  const target = s.split("|")[0].split("#")[0];
+  return `[[${target}]]`;
+}
+function scalar(v) {
+  if (v == null) return "";
+
+  // arrays → first item
+  if (Array.isArray(v)) return scalar(v[0]);
+
+  // objects from pickers
+  if (typeof v === "object") {
+    if (v.name) return String(v.name);
+    if (v.basename && v.extension) return `${v.basename}.${v.extension}`;
+    if (v.path) return String(v.path).split("/").pop();
+    return "";
+  }
+
+  // string cleanup
+  let s = String(v).trim();
+  if (!s) return "";
+
+  // already a wikilink → pull target
+  const w = s.match(/\[\[\s*([^|\]]+?)\s*(?:\|[^\]]*)?\]\]/);
+  if (w) s = w[1];
+
+  // try JSON (handles '["Dragonborn"]' or '{"name":"file.png"}' or '"Dragonborn"')
+  try { return scalar(JSON.parse(s)); } catch {}
+
+  // strip surrounding quotes if present
+  s = s.replace(/^\s*['"]+/, "").replace(/['"]+\s*$/, "");
+
+  // final: drop pipes/anchors and trailing path
+  s = s.split("|")[0].split("#")[0].trim();
+  return s;
+}
+
+// wraps a target as a wikilink; set {basename:true} to force pathless
+function wl(v, { basename = false } = {}) {
+  let t = scalar(v);
+  if (!t) return "";
+  if (basename) t = t.split("/").pop();
+  t = t.replace(/^['"]+|['"]+$/g, ""); // safety: no quotes left
+  return `[[${t}]]`;
+}
+
+function yamlQuote(s) {
+  return `"${String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+}
+
+// wikilink → YAML-safe (uses your scalar/wl logic, then quotes)
+function wlYaml(v, opts = {}) {
+  const s = wl(v, opts);           // your existing wikilink wrapper
+  return s ? yamlQuote(s) : '""';  // quoted so YAML doesn't turn it into arrays
+}
+
+function asLinkBasename(v) {
+  const s = asLink(v);
+  if (!s) return "";
+  const inner = s.slice(2, -2);               // remove [[ ]]
+  const base = inner.split("|")[0].split("#")[0].split("/").pop();
+  return base ? `[[${base}]]` : "";
+}
+
 function removeBold(str) { return str.replace(/\*\*/g, "").trim(); }
 
 function getSubclass() {
@@ -351,21 +425,23 @@ const skillsJson = processList(result.get("Skill Proficiencies"));
 const skillsArr      = normalizeMulti(result.get("Skill Proficiencies"));
 const languagesArr   = normalizeMulti(result.get("Languages"));
 const keyItemsArr    = normalizeMulti(result.get("key_items"));
+const keyItemsWl = keyItemsArr.map(v => wl(v));
+
 const appearencesArr = normalizeMulti(result.get("appearances")); // optional
 
 // ─── Build Frontmatter (NEW SCHEMA) ───────────────────────────────────
 const frontmatter = `---
 name: ${name}
 aliases: ${result.get("aliases") || ""}
-HP: ${result.get("hp") || ""}
-currentHP: ${result.get("hp") || ""}
-AC: ${result.get("ac") || ""}
+hp: ${result.get("hp") || ""}
+current_hp: ${result.get("hp") || ""}
+ac: ${result.get("ac") || ""}
 level: ${result.get("level") || ""}
-species: ${result.get("pcspecies") || ""}
-race: ${result.get("race") || ""}
-class: ${result.get("pcclass") || ""}
-subclass: ${subclass || ""}
-background: ${result.get("background") || ""}
+species: ${wlYaml(result.get("pcspecies"))}
+race: ${wlYaml(result.get("race"))}  
+class: ${wlYaml(result.get("pcclass"))}
+subclass: ${wlYaml(result.get("subclass"))}
+background: ${wlYaml(result.get("background"))}
 species-traits: ${speciesRaceTraitsJson}
 class-traits: ${classTraitsCombinedJson}
 background-traits: ${backgroundTraitsJson}
@@ -387,9 +463,10 @@ ${toYamlList('tool-prof',     toolProfArr)}
 ${toYamlList('languages', languagesArr)}
 ${spellsYaml}
 ${toYamlList('appearences', appearencesArr)}
-key_items: ${Array.isArray(result.get("key_items")) ? JSON.stringify(result.get("key_items")) : (result.get("key_items") || "[]")}
+${toYamlList('key_items', keyItemsWl)}
 vermun_credit: 0
-image: ${result.get("pc_picture") || ""}
+image: ${wlYaml(result.get("pc_picture"), { basename: true })}
+
 ---`;
 
 // ─── Assemble Note Content (NEW BODY) ─────────────────────────────────

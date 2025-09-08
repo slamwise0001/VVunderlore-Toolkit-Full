@@ -27,8 +27,10 @@
   "rulesetReference": [],
   "reparseGamesets": true,
   "isFirstRun": "yes",
+  "sessionTitlePreference": "name",
+  "enableSidebarPreviews": true,
   "latestToolkitVersion": "1.1.5",
-  "lastChecked": "2025-09-07T04:59:09.575Z",
+  "lastChecked": "2025-09-08T21:14:53.432Z",
   "fileCache": {
     ".vvunderlore_installed": {
       "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -79,7 +81,7 @@
       "githubPath": "Extras/Templates/(The Testing of VVunderlore)sessiontemplate.md"
     },
     "Extras/Templates/base_sessiontemplate.md": {
-      "hash": "c8aa73929b06274ed0aafdd7446504a3b3337c5ded8ca9916b217047cce5f3e1",
+      "hash": "3086b02c287544c5ef84cb65863e57c68117a31758f9cad7dfec0cd2b49eb0e3",
       "githubPath": "Extras/Templates/base_sessiontemplate.md"
     },
     "Extras/Templates/encounter_template.md": {
@@ -91,23 +93,23 @@
       "githubPath": "Extras/Templates/newadventure_template.md"
     },
     "Extras/Templates/newcreature_template.md": {
-      "hash": "6da7567c7759499fae66ccc27fdc128a4bdd930fde9a6b532b1b088dd352bf15",
+      "hash": "d645958eae6777d09810e6787e33792bc85a6ab9881bfd5bc24296229171b04b",
       "githubPath": "Extras/Templates/newcreature_template.md"
     },
     "Extras/Templates/newitem_template.md": {
-      "hash": "2f72023307af507702647903277dec1c3e3e88eedfd1104aed698c938bdc3171",
+      "hash": "5e6b6f7899b0ef7a8b9edd184424f7e5dd9d27fb98fff6b96165cea376eb3911",
       "githubPath": "Extras/Templates/newitem_template.md"
     },
     "Extras/Templates/newplace_template.md": {
-      "hash": "65977aa2bc4750fe06cfd39178fd5e652a33ab7d42d145474950b5a5d205c82e",
+      "hash": "f71a76986e91468228d2825ae391d431cfc9576c794ec6a0e110d634ff079bdd",
       "githubPath": "Extras/Templates/newplace_template.md"
     },
     "Extras/Templates/npc_template.md": {
-      "hash": "d788c888eda60a8624b3946e4d7d413bbfee962386baca9a679aa05593002244",
+      "hash": "0896e0d93cea71711ba456af398c548477a405209499d6053f454ec003586c9a",
       "githubPath": "Extras/Templates/npc_template.md"
     },
     "Extras/Templates/playercharacter_template.md": {
-      "hash": "7e0a75acd95121df3f93783c4e7b2bf02b44b4071e05499187b454fb35ee0183",
+      "hash": "a16d9a48ed1305ad3e15459c3723b423d072090aad622333a28ba00a06f9d657",
       "githubPath": "Extras/Templates/playercharacter_template.md"
     },
     "Extras/Templates/playerdash_template.md": {
@@ -163,16 +165,20 @@
       "githubPath": "Extras/Toolkit Bases/pc_abilities.base"
     },
     "Extras/Toolkit Bases/pc_spells.base": {
-      "hash": "a3b0d7ad2a4b51e3bd76e059ef9698931d8fe3d5e2aeea93d2a6f88fa1e18969",
+      "hash": "b62d0c07fd9a367d63d06ba00cbf458766c60354392db38e81920603919c0650",
       "githubPath": "Extras/Toolkit Bases/pc_spells.base"
     },
     "Extras/Toolkit Bases/pc_stats.base": {
-      "hash": "8ec93cc9f38587c7bb1b61f0a87e6586238d9bfcf2f3564a72f33b77f1968f02",
+      "hash": "08661152224623ccafbb4b637774008faa3266b6c82f6929adaff581e1002a0b",
       "githubPath": "Extras/Toolkit Bases/pc_stats.base"
     },
     "Extras/Templates/_startup_init.md": {
       "hash": "e61a61d5be453d847b6fa549e0f3bf063bf9b8a059303e6c6b41c22d0b3be666",
       "githubPath": "Extras/Templates/_startup_init.md"
+    },
+    "Extras/Templates/tmp_primer.md": {
+      "hash": "96c105c21160468fe57a3883c53912c45231a4f2faee60e3ded03e6d32c34e77",
+      "githubPath": "Extras/Templates/tmp_primer.md"
     }
   }
 }
