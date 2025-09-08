@@ -296,6 +296,16 @@
       ]
     },
     {
+      "path": "Extras/Templates/tmp_primer.md",
+      "optional": false,
+      "key": "extras-templates-tmp_primer",
+      "displayName": "Tmp Primer",
+      "requires": [
+        "extras",
+        "extras-templates"
+      ]
+    },
+    {
       "path": "Extras/Templates/vermunitem_template.md",
       "optional": false,
       "key": "extras-templates-vermunitem_template",
