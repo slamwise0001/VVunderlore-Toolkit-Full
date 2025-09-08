@@ -1,234 +1,111 @@
 ---
-hp: 17
-ac: 18
-modifier: 2
-level: 8
-Name: Munch Tippledew
-Species: "[[Half-Orc]]"
-Race: 
-Class: "[[Compendium/Classes/Bard/Bard|Bard]]"
-Subclass: "[[College of Satire]]"
-Alignment: Neutral Good
-Strength: "15"
-Dexterity: "14"
-Constitution: "18"
-Intelligence: "14"
-Wisdom: "12"
-Charisma: "10"
-current_hp: 74
-Speed: "30"
-Proficiency Bonus: "3"
-Skill Proficiencies:
-  - Athletics
-  - Insight
-  - Intimidation
-ST Proficiencies:
-  - Strength
-  - Constitution
-Weapon Proficiencies: 
-Armor Proficiencies: 
-Tool Proficiencies: 
-Languages: 
-Spells: 
+name: Munch Tippledew
 aliases:
-  - 3mo
-  - Dump
-adventures:
+  - Munch
+  - The Tippler
+hp: 66
+current_hp: 66
+ac: 16
+level: 8
+species: "[[Half-Orc]]"
+race: ""
+class: "[[Compendium/Player Build/Classes/Bard/Bard|Bard]]"
+subclass: "[[College of Tragedy]]"
+background: "[[Inheritor]]"
+species-traits:
+  - "[[Half-Orc#Darkvision|Darkvision]]"
+  - "[[Half-Orc#Menacing|Menacing]]"
+  - "[[Half-Orc#Relentless Endurance|Relentless Endurance]]"
+  - "[[Half-Orc#Savage Attacks|Savage Attacks]]"
+class-traits:
+  - "[[Bard#Bardic Inspiration|Bardic Inspiration]]"
+  - "[[Bard#Spellcasting|Spellcasting]]"
+  - "[[Bard#Jack Of All Trades|Jack of All Trades]]"
+  - "[[Bard#Song Of Rest D6|Song of Rest (d6)]]"
+  - "[[Bard#Magical Inspiration|Magical Inspiration]]"
+  - "[[Bard#Expertise|Expertise]]"
+  - "[[Bard#Bardic Versatility|Bardic Versatility]]"
+  - "[[Bard#Bardic Inspiration D8|Bardic Inspiration (d8)]]"
+  - "[[Bard#Font Of Inspiration|Font of Inspiration]]"
+  - "[[Bard#Countercharm|Countercharm]]"
+  - "[[College of Tragedy#College Of Tragedy|College of Tragedy]]"
+  - "[[College of Tragedy#Poetry In Misery|Poetry in Misery]]"
+  - "[[College of Tragedy#Sorrowful Fate|Sorrowful Fate]]"
+  - "[[College of Tragedy#Impending Misfortune|Impending Misfortune]]"
+  - "[[College of Tragedy#Tale Of Hubris|Tale of Hubris]]"
+background-traits:
+  - "[[Inheritor#Inheritance|Inheritance]]"
+  - "[[Inheritor#Suggested Characteristics|Suggested Characteristics]]"
+Alignment: Neutral Good
+strength: 15
+dexterity: 14
+constitution: 11
+intelligence: 12
+wisdom: 13
+charisma: 17
+iniative: 2
+speed: Walk 30 ft.
+Proficiency bonus: 3
+skills:
+  - Performance
+  - Persuasion
+  - Arcana
+  - Nature
+  - Stealth
+saving_throws:
+  - Dexterity
+  - Charisma
+weapon-prof:
+  - Simple Weapons
+  - "[[Hand Crossbow]]"
+  - "[[Longsword]]"
+  - "[[Rapier]]"
+  - "[[Shortsword]]"
+armor-prof:
+  - Light
+tool-prof:
+  - Choose 3 Musical Instrument
+  - Choose 1
+languages:
+  - Common
+  - Orc
+  - Elvish
+Spells:
+  - "[[Longstrider]]"
+  - "[[Tongues]]"
+  - "[[Illusory Script]]"
+  - "[[Leomund's Secret Chest]]"
+appearences:
   - The Testing of VVunderlore
 key_items:
-  - "[[Portable Hole]]"
-  - "[[Bag of Tricks, Gray]]"
-vcredit: "0"
+  - "[[Lute]]"
+  - "[[Flute]]"
+  - "[[Bullseye Lantern]]"
+vermun_credit: 0
+image: "[[playerpic-2025-09-08-13-19-46.jpg]]"
 ---
 # Munch Tippledew
+*College of Tragedy Bard -  Half-Orc - Neutral Good*
 
-# ⚔️ Combat Stats
-```dataviewjs
-const file = dv.current();
+### Stats:
+![[pc_stats.base]]
 
-// Handle undefined values
-const armorClass = file["ac"] || "N/A";
-const dexterity = file.Dexterity || 10; // Default to 10 if undefined
-const dexModifier = Math.floor((dexterity - 10) / 2);
-const hpMax = file["hp"] || "0";
-const hpCurrent = file["current_hp"] || "0";
-const hp = `${hpMax}/${hpCurrent}`;
+### Abilities:
+![[pc_abilities.base]]
 
-// Output as Markdown table
-const tableMarkdown = `
-| Armor Class | Initiative | HP (Max/Current) |
-|-------------|------------|------------------|
-| **${armorClass}** | **+${dexModifier}** | **${hp}** |
-`;
+#### Spells:
+![[pc_spells.base]]
 
-dv.paragraph(tableMarkdown);
+## Character Details:
+---
+### History:
 
-```
-```dataviewjs
-// Get current file's metadata
-const file = dv.current();
+### Personality:
 
-// Function to calculate the ability modifier
-function calculateModifier(score) {
-    return Math.floor((score - 10) / 2);
-}
+### Bonds/Goals
 
-// List of abilities to display
-const abilities = ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"];
+### Open Plot Threads:
 
-// Get proficiency list and proficiency bonus
-const proficiencies = file["ST Proficiencies"] || [];
-const proficiencyBonus = Number(file["Proficiency Bonus"]) || 0; // Ensure it's treated as a number
+### Relationships:
 
-// Debugging output
-console.log("Proficiencies:", proficiencies);
-console.log("Proficiency Bonus:", proficiencyBonus);
-
-// Generate the table markdown
-const tableMarkdown = `
-| Ability      | Value | Modifier | Saving Throw |
-|--------------|-------|----------|--------------|
-${abilities.map(ability => {
-    const value = Number(file[ability]) || 10; // Ensure the value is treated as a number
-    const modifier = calculateModifier(value);
-    const total = proficiencies.includes(ability) ? modifier + proficiencyBonus : modifier;
-    
-    return `| ${ability} | **${value}** | **+${modifier}** | **+${total}** |`;
-}).join("\n")}
-`;
-
-dv.paragraph(tableMarkdown);
-
-```
-
-# 🧠  Skills
-```dataviewjs
-// List of all D&D skills and their associated abilities
-const skills = {
-    "Acrobatics": "Dexterity", "Animal Handling": "Wisdom", "Arcana": "Intelligence", "Athletics": "Strength", "Deception": "Charisma",
-    "History": "Intelligence", "Insight": "Wisdom", "Intimidation": "Charisma", "Investigation": "Intelligence", "Medicine": "Wisdom",
-    "Nature": "Intelligence", "Perception": "Wisdom", "Performance": "Charisma", "Persuasion": "Charisma", "Religion": "Intelligence",
-    "Sleight of Hand": "Dexterity", "Stealth": "Dexterity", "Survival": "Wisdom"
-};
-
-// Get current file's metadata
-const file = dv.current();
-
-// Get skill proficiency list and proficiency bonus
-const skillProficiencies = file["Skill Proficiencies"] || [];
-const proficiencyBonus = Number(file["Proficiency Bonus"]) || 0; // Ensure proficiency bonus is treated as a number
-
-// Function to calculate the ability modifier
-function calculateModifier(score) {
-    return Math.floor((Number(score) - 10) / 2); // Ensure ability scores are treated as numbers
-}
-
-// Generate the table markdown
-const tableMarkdown = `
-| Skill            | Modifier | Proficient |
-|------------------|----------|------------|
-${Object.entries(skills).map(([skill, ability]) => {
-    const value = Number(file[ability]) || 10; // Ensure ability score is treated as a number
-    const modifier = calculateModifier(value);
-    const total = skillProficiencies.includes(skill) ? modifier + proficiencyBonus : modifier;
-    const proficiencyIndicator = skillProficiencies.includes(skill) ? "⭐" : "";
-    return `| ${skill} | **+${total}** | ${proficiencyIndicator} |`;
-}).join("\n")}
-`;
-
-dv.paragraph(tableMarkdown);
-
-```
-```dataviewjs
-// Get current file's metadata
-const file = dv.current();
-
-// Retrieve proficiency lists
-const weaponProficiencies = file["Weapon Proficiencies"] || [];
-const armorProficiencies = file["Armor Proficiencies"] || [];
-const toolProficiencies = file["Tool Proficiencies"] || [];
-
-// Generate the table markdown
-const tableMarkdown = `
-| Type     | Proficiencies                                      |
-|----------|----------------------------------------------------|
-| Weapons  | ${weaponProficiencies.join(", ")}                  |
-| Armor    | ${armorProficiencies.join(", ")}                   |
-| Tools    | ${toolProficiencies.join(", ")}                    |
-`;
-
-dv.paragraph(tableMarkdown);
-```
-
-# Spells
-
-```dataviewjs
-// Get current file's metadata
-const file = dv.current();
-
-// Retrieve the list of spells from the frontmatter
-const spellsList = file["Spells"] || [];
-
-// Check if there are any spells listed in the frontmatter
-if (spellsList.length > 0) {
-
-    // Generate the table
-    dv.table(
-      ["Spell", "Level", "Saving Throw", "Duration", "Casting Time", "Range", "Damage Type"],
-      dv.pages('"Compendium/Spells"')
-        .where(p => spellsList.some(spell => spell.path === p.file.path)) // Match spells by path
-        .sort(p => p.file.name, 'asc') // Sort by spell name
-        .map(p => [
-            p.file.link,          // Spell name (as link)
-            p.level,              // Level
-            p.saving_throw,       // Saving Throw
-            p.duration,           // Duration
-            p.casting_time,       // Casting Time
-            p.range,              // Range
-            p.damage_type         // Damage Type
-        ])
-    );
-} else {
-    // Display custom message when no spells are found
-    dv.paragraph("Character has 0 spells. What a dope.");
-}
-
-```
-
-#  🧰 Equipment
-
-###  🗡️ Weapons
-
-- No weapons listed
-
-
-### 🛡 Armor
-
-- No armor listed
-
-
-###  🪕 Tools
-
-- No tools listed
-
-
-#  👤 Personal Details
-
-- **Status**: NaN
-- **Height**: NaN m
-- **Weight**: NaN kg
-- **Background**: NaN
-- **Gender**: NaN
-- **Birthday**: NaN
-
-## Fun Facts!
-
-
-## Allies & Enemies
-*Important allies, NPCs, or enemies in the character’s life.*
-
-## Inventory
-*Track important items, loot, or equipment.*
-
-## Notes
-*Anything else worth remembering.*
+### Fun Facts:

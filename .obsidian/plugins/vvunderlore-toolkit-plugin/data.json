@@ -21,16 +21,20 @@
   "customPaths": [],
   "autoBackupBeforeUpdate": true,
   "highlightEnabled": false,
-  "highlightColorLight": "rgb(107, 146, 120)",
-  "highlightColorDark": "rgb( 50,  70,  50)",
-  "rulesetCompendium": "none",
+  "highlightColorLight": "#DFE7E2",
+  "highlightColorDark": "#1F2943",
+  "rulesetCompendium": "",
   "rulesetReference": [],
   "reparseGamesets": true,
   "isFirstRun": "yes",
   "sessionTitlePreference": "name",
   "enableSidebarPreviews": true,
-  "latestToolkitVersion": "1.1.5",
-  "lastChecked": "2025-09-08T21:14:53.432Z",
+  "latestToolkitVersion": "1.1.6",
+  "lastChecked": "2025-09-08T22:32:21.899Z",
+  "gameplay": {
+    "selectedPlayers": [],
+    "activeFolder": "World/People/Player Characters/Active"
+  },
   "fileCache": {
     ".vvunderlore_installed": {
       "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -76,6 +80,10 @@
       "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "githubPath": "Extras/SYS/The Testing of VVunderlore_summary.md"
     },
+    "Extras/Templates/_startup_init.md": {
+      "hash": "e61a61d5be453d847b6fa549e0f3bf063bf9b8a059303e6c6b41c22d0b3be666",
+      "githubPath": "Extras/Templates/_startup_init.md"
+    },
     "Extras/Templates/(The Testing of VVunderlore)sessiontemplate.md": {
       "hash": "68989e958f68bf5990087cadbb9f566701510af0f81d7df6b97b990821a08fc8",
       "githubPath": "Extras/Templates/(The Testing of VVunderlore)sessiontemplate.md"
@@ -83,10 +91,6 @@
     "Extras/Templates/base_sessiontemplate.md": {
       "hash": "3086b02c287544c5ef84cb65863e57c68117a31758f9cad7dfec0cd2b49eb0e3",
       "githubPath": "Extras/Templates/base_sessiontemplate.md"
-    },
-    "Extras/Templates/encounter_template.md": {
-      "hash": "6b7c7cd3125e7360a5a18a607d23cacb0ca0eac7e440a3e45fb565019c1834f0",
-      "githubPath": "Extras/Templates/encounter_template.md"
     },
     "Extras/Templates/newadventure_template.md": {
       "hash": "b803e6e2e489057fb6e7e34dfcffe3ef0437138bc36a1fc7e08907391f6729af",
@@ -120,9 +124,25 @@
       "hash": "6365006e293df79268e5fedff51e907ec7780fe19836453f88270cbe1ebb3119",
       "githubPath": "Extras/Templates/statblock_template.md"
     },
+    "Extras/Templates/tmp_primer.md": {
+      "hash": "96c105c21160468fe57a3883c53912c45231a4f2faee60e3ded03e6d32c34e77",
+      "githubPath": "Extras/Templates/tmp_primer.md"
+    },
     "Extras/Templates/vermunitem_template.md": {
       "hash": "20269b767eadee4c9497786ddf9ace20ae24995862457a9322c78ba13beebb27",
       "githubPath": "Extras/Templates/vermunitem_template.md"
+    },
+    "Extras/Toolkit Bases/pc_abilities.base": {
+      "hash": "bed92cc521aa79624173187aece0dbf1c80fd7f38d030f9216b47a9cb0a60698",
+      "githubPath": "Extras/Toolkit Bases/pc_abilities.base"
+    },
+    "Extras/Toolkit Bases/pc_spells.base": {
+      "hash": "b62d0c07fd9a367d63d06ba00cbf458766c60354392db38e81920603919c0650",
+      "githubPath": "Extras/Toolkit Bases/pc_spells.base"
+    },
+    "Extras/Toolkit Bases/pc_stats.base": {
+      "hash": "08661152224623ccafbb4b637774008faa3266b6c82f6929adaff581e1002a0b",
+      "githubPath": "Extras/Toolkit Bases/pc_stats.base"
     },
     "Tools/Party Overview.md": {
       "hash": "54eee8cc8184294ed6a6d88cb2a305c28c4843f78c68d0e408b4e5fbb0df4caf",
@@ -145,11 +165,11 @@
       "githubPath": "World/People/Non-Player Characters/Lomin Topplesquirt.md"
     },
     "World/People/Player Characters/Active/Chixlum the Handsy.md": {
-      "hash": "2fcfcf325db7107448476f434eb20a6acf57dba7f4829535d0b9f3f170bdd736",
+      "hash": "f39ee6ff057eee9eb449027f31b23501ac4cd5d84a613f42b0fa82e3f0f1b5d3",
       "githubPath": "World/People/Player Characters/Active/Chixlum the Handsy.md"
     },
     "World/People/Player Characters/Active/Munch Tippledew.md": {
-      "hash": "b3038731810bc40d71cccfd193bcb3626d632cdeb68d9e2d300d80d49651df15",
+      "hash": "6c3c3839dc37d086f33ea3215e4d8d8eefb6e27ca6ec8a93124a98ac490dad2b",
       "githubPath": "World/People/Player Characters/Active/Munch Tippledew.md"
     },
     "World/People/Player Characters/Inactive/Burrata Ensalada.md": {
@@ -159,26 +179,6 @@
     "World/Places/EXAMPLE - Tower of Struug Nur.md": {
       "hash": "6f776413a365eb7d04b8784d85c0487526b4776d4384549f7c8825c27642a7b9",
       "githubPath": "World/Places/EXAMPLE - Tower of Struug Nur.md"
-    },
-    "Extras/Toolkit Bases/pc_abilities.base": {
-      "hash": "bed92cc521aa79624173187aece0dbf1c80fd7f38d030f9216b47a9cb0a60698",
-      "githubPath": "Extras/Toolkit Bases/pc_abilities.base"
-    },
-    "Extras/Toolkit Bases/pc_spells.base": {
-      "hash": "b62d0c07fd9a367d63d06ba00cbf458766c60354392db38e81920603919c0650",
-      "githubPath": "Extras/Toolkit Bases/pc_spells.base"
-    },
-    "Extras/Toolkit Bases/pc_stats.base": {
-      "hash": "08661152224623ccafbb4b637774008faa3266b6c82f6929adaff581e1002a0b",
-      "githubPath": "Extras/Toolkit Bases/pc_stats.base"
-    },
-    "Extras/Templates/_startup_init.md": {
-      "hash": "e61a61d5be453d847b6fa549e0f3bf063bf9b8a059303e6c6b41c22d0b3be666",
-      "githubPath": "Extras/Templates/_startup_init.md"
-    },
-    "Extras/Templates/tmp_primer.md": {
-      "hash": "96c105c21160468fe57a3883c53912c45231a4f2faee60e3ded03e6d32c34e77",
-      "githubPath": "Extras/Templates/tmp_primer.md"
     }
   }
 }

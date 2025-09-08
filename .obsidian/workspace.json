@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "bee686afa595aca7",
+        "id": "b234cfaaa36b6b35",
         "type": "tabs",
         "children": [
           {
-            "id": "e2d4e5b0a8c3e9f7",
+            "id": "a991582e0d94c607",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -162,7 +162,7 @@
             }
           },
           {
-            "id": "a2ea191b39586bad",
+            "id": "bbb29d0b74fda199",
             "type": "leaf",
             "state": {
               "type": "vvunderlore-templates-sidebar",
@@ -172,7 +172,7 @@
             }
           },
           {
-            "id": "79ef597f1a60280e",
+            "id": "ad8b283a227e010b",
             "type": "leaf",
             "state": {
               "type": "vvunderlore-gameplay",
@@ -182,11 +182,11 @@
             }
           }
         ],
-        "currentTab": 5
+        "currentTab": 6
       }
     ],
     "direction": "horizontal",
-    "width": 540.5
+    "width": 491.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -206,14 +206,14 @@
       "vvunderlore-toolkit:VVunderlore Sidebars": false
     }
   },
-  "active": "e2d4e5b0a8c3e9f7",
+  "active": "ad8b283a227e010b",
   "lastOpenFiles": [
-    "World/Places/TTRPG 1.md",
+    "World/People/Player Characters/Active/Chixlum the Handsy.md",
     "Welcome.md",
+    "Extras/Toolkit Bases/pc_stats.base",
+    "World/Places/TTRPG 1.md",
     "World/Places/TTRPG.md",
     "Untitled.md",
-    "World/People/Player Characters/Active/Chixlum the Handsy.md",
-    "Extras/Toolkit Bases/pc_stats.base",
     "Extras/Toolkit Bases/pc_spells.base",
     "Extras/Templates/playercharacter_template.md",
     "Extras/Templates/npc_template.md",
@@ -242,7 +242,6 @@
     "World/Untitled.md",
     "Tools/Party Overview.md",
     "Extras/PC Dashboards/dash-Burrata Ensalada.md",
-    "Extras/PC Dashboards/dash-Chixlum the Handsy.md",
-    "Extras/PC Dashboards/dash-Munch Tippledew.md"
+    "Extras/PC Dashboards/dash-Chixlum the Handsy.md"
   ]
 }
