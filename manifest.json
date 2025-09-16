@@ -296,16 +296,6 @@
       ]
     },
     {
-      "path": "Extras/Templates/tmp_primer.md",
-      "optional": false,
-      "key": "extras-templates-tmp_primer",
-      "displayName": "Tmp Primer",
-      "requires": [
-        "extras",
-        "extras-templates"
-      ]
-    },
-    {
       "path": "Extras/Templates/vermunitem_template.md",
       "optional": false,
       "key": "extras-templates-vermunitem_template",
@@ -344,30 +334,6 @@
       "requires": [
         "extras",
         "extras-toolkit bases"
-      ]
-    },
-    {
-      "path": "Tools/Party Overview.md",
-      "optional": false,
-      "key": "tools-party overview",
-      "displayName": "Party Overview",
-      "requires": [
-        "tools",
-        "world-people-player characters-active",
-        "",
-        "world",
-        "world-people",
-        "world-people-player characters"
-      ]
-    },
-    {
-      "path": "Tools/Spellbook.md",
-      "optional": false,
-      "key": "tools-spellbook",
-      "displayName": "Spellbook",
-      "requires": [
-        "tools",
-        ""
       ]
     },
     {
