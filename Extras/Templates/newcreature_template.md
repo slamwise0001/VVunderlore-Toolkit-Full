@@ -15,8 +15,13 @@ async function cleanupIfBlankNewNote() {
 }
 
 // Open the form + robust cancel detection
-const seedName = (tp.file?.title || "").replace(/\.(md|markdown)$/i, "");
-const res = await mf.openForm("new-creature", { values: { name : seedName } });
+let seedName = "";
+try { seedName = ((await Promise.resolve(typeof tp.file.selection === "function" ? tp.file.selection() : tp.file.selection)) || "").toString().trim(); } catch (_) {}
+if (!seedName) try { const ed = app.workspace?.activeEditor?.editor; if (ed?.getSelection) seedName = ed.getSelection().trim(); } catch (_) {}
+if (!seedName) try { const ed = app.workspace?.getMostRecentLeaf?.()?.view?.editor; if (ed?.getSelection) seedName = ed.getSelection().trim(); } catch (_) {}
+const opts = seedName ? { values: { name: seedName } } : {};
+const res = await mf.openForm("new-creature", opts);
+
 
 const cancelled =
   !res ||

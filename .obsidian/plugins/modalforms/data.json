@@ -2144,7 +2144,38 @@
         {
           "name": "Skill Proficiencies",
           "label": "Skill Proficiencies",
-          "description": "List the skills the character is proficient in (comma separated)",
+          "description": "List the skills the character is proficient in (press enter to add)",
+          "isRequired": false,
+          "input": {
+            "type": "multiselect",
+            "source": "fixed",
+            "multi_select_options": [
+              "Athletics",
+              "Acrobatics",
+              "Sleight of Hand",
+              "Stealth",
+              "Arcana",
+              "History",
+              "Investigation",
+              "Nature",
+              "Religion",
+              "Animal Handling",
+              "Insight",
+              "Medicine",
+              "Perception",
+              "Survival",
+              "Deception",
+              "Intimidation",
+              "Performance",
+              "Persuasion"
+            ],
+            "allowUnknownValues": false
+          }
+        },
+        {
+          "name": "expertise",
+          "label": "Expertise",
+          "description": "List the skills the character is proficient in (press enter to add)",
           "isRequired": false,
           "input": {
             "type": "multiselect",
@@ -2186,7 +2217,7 @@
         {
           "name": "Languages",
           "label": "",
-          "description": "What languages does this character speak? (comma separated)",
+          "description": "What languages does this character speak? (press enter to add)",
           "isRequired": false,
           "input": {
             "type": "multiselect",
@@ -2215,7 +2246,7 @@
         {
           "name": "key_items",
           "label": "Key Items",
-          "description": "Any items you want to remember they have? (comma separated)",
+          "description": "Any items you want to remember they have? (press enter to add)",
           "isRequired": false,
           "input": {
             "type": "multiselect",

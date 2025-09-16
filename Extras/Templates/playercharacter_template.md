@@ -21,8 +21,37 @@ async function cleanupIfBlankNewNote() {
 
 // Open the form + robust cancel detection
 
-const seedName = (tp.file?.title || "").replace(/\.(md|markdown)$/i, "");
-const res = await modalForm.openForm("new-player-character", { values: { Name : seedName } });
+let seedName = "";
+
+try {
+  if (tp?.file?.selection) {
+    const s = typeof tp.file.selection === "function" ? tp.file.selection() : tp.file.selection;
+    seedName = ((await Promise.resolve(s)) || "").toString().trim();
+  }
+} catch (_) { /* ignore */ }
+
+if (!seedName) {
+  try {
+    const ed = app.workspace?.activeEditor?.editor;
+    if (ed && typeof ed.getSelection === "function") {
+      seedName = (ed.getSelection() || "").trim();
+    }
+  } catch (_) { /* ignore */ }
+}
+
+if (!seedName) {
+  try {
+    const leaf = app.workspace?.getMostRecentLeaf?.();
+    const ed = leaf?.view?.editor;
+    if (ed && typeof ed.getSelection === "function") {
+      seedName = (ed.getSelection() || "").trim();
+    }
+  } catch (_) { /* ignore */ }
+}
+
+const opts = seedName ? { values: { Name: seedName } } : {};
+const res = await modalForm.openForm("new-player-character", opts);
+
 
 const cancelled =
   !res ||
@@ -423,6 +452,7 @@ const skillsJson = processList(result.get("Skill Proficiencies"));
 
 // Multiselects as arrays for YAML lists
 const skillsArr      = normalizeMulti(result.get("Skill Proficiencies"));
+const expertiseArr      = normalizeMulti(result.get("expertise"));
 const languagesArr   = normalizeMulti(result.get("Languages"));
 const keyItemsArr    = normalizeMulti(result.get("key_items"));
 const keyItemsWl = keyItemsArr.map(v => wl(v));
@@ -456,6 +486,7 @@ iniative: ${signed(initiativeFinal)}
 speed: ${speciesSpeed}
 Proficiency bonus: +${proficiencyBonus}
 ${toYamlList('skills', skillsArr)}
+${toYamlList('expertise', expertiseArr)}
 ${toYamlList('saving_throws', savingThrowsArr)}
 ${toYamlList('weapon-prof',   weaponProfArr)}
 ${toYamlList('armor-prof',    armorProfArr)}

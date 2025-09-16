@@ -16,8 +16,13 @@ async function cleanupIfBlankNewNote() {
   } catch (_) {}
 }
 
-const seedName = (tp.file?.title || "").replace(/\.(md|markdown)$/i, "");
-const res = await modalForm.openForm("new-npc-form", { values: { Name : seedName } });
+let seedName = "";
+try { seedName = ((await Promise.resolve(typeof tp.file.selection === "function" ? tp.file.selection() : tp.file.selection)) || "").toString().trim(); } catch (_) {}
+if (!seedName) try { const ed = app.workspace?.activeEditor?.editor; if (ed?.getSelection) seedName = ed.getSelection().trim(); } catch (_) {}
+if (!seedName) try { const ed = app.workspace?.getMostRecentLeaf?.()?.view?.editor; if (ed?.getSelection) seedName = ed.getSelection().trim(); } catch (_) {}
+const opts = seedName ? { values: { Name: seedName } } : {};
+const res = await modalForm.openForm("new-npc-form", opts);
+
 
 const isMap = !!res && typeof res === "object" && typeof res.get === "function";
 const explicitCanceled = isMap

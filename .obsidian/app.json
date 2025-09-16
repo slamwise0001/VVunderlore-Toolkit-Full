@@ -3,5 +3,8 @@
   "promptDelete": false,
   "showInlineTitle": false,
   "showLineNumber": false,
-  "readableLineLength": false
+  "readableLineLength": false,
+  "userIgnoreFilters": [
+    "Resources/Rulesets/"
+  ]
 }

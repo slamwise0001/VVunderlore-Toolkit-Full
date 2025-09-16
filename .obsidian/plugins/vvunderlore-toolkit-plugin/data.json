@@ -30,7 +30,7 @@
   "sessionTitlePreference": "name",
   "enableSidebarPreviews": true,
   "latestToolkitVersion": "1.1.6",
-  "lastChecked": "2025-09-08T22:32:21.899Z",
+  "lastChecked": "2025-09-16T23:56:03.412Z",
   "gameplay": {
     "selectedPlayers": [],
     "activeFolder": "World/People/Player Characters/Active"
@@ -113,7 +113,7 @@
       "githubPath": "Extras/Templates/npc_template.md"
     },
     "Extras/Templates/playercharacter_template.md": {
-      "hash": "a16d9a48ed1305ad3e15459c3723b423d072090aad622333a28ba00a06f9d657",
+      "hash": "f788c50f1488b71761a0c3fa84cfdf8cc1c0b5099771b721e0eabab23ab765bb",
       "githubPath": "Extras/Templates/playercharacter_template.md"
     },
     "Extras/Templates/playerdash_template.md": {
