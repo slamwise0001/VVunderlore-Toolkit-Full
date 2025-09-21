@@ -47,3 +47,16 @@ jobs:
                 }
               ]
             }' > payload.json
+
+      - name: Send to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_URL }}
+        run: |
+          set -e
+          code=$(curl -sS -o resp.txt -w "%{http_code}" \
+            -H "Content-Type: application/json" \
+            -X POST "$DISCORD_WEBHOOK?wait=true" \
+            -d @payload.json)
+          echo "HTTP $code"
+          cat resp.txt
+          test "$code" -ge 200 -a "$code" -lt 300
