@@ -13,15 +13,19 @@ jobs:
 
       - name: Build Discord embed
         id: build
+        shell: bash
         run: |
+          set -euo pipefail
           VERSION="$(jq -r '.version' .verson.json)"
           TITLE="VVunderlore Toolkit v${VERSION}"
 
-          PREFIX="Hey a new version of the VVunderlore Toolkit is available. It’s version **${VERSION}**.
-
-**Changelog:**"
-          CHANGELOG="$(cat README.md || true)"
-          printf '%s\n\n%s\n' "$PREFIX" "$CHANGELOG" > desc.txt
+          {
+            echo "Hey a new version of the VVunderlore Toolkit is available. It's version **${VERSION}**."
+            echo
+            echo "**Changelog:**"
+            echo
+            cat README.md || true
+          } > desc.txt
 
           jq -n \
             --arg username "Update Peddler" \
@@ -43,4 +47,3 @@ jobs:
                 }
               ]
             }' > payload.json
-
