@@ -27,5 +27,11 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_URL }}
         run: |
-          curl -sS -X POST -H "Content-Type: application/json" \
-            -d @payload.json "$DISCORD_WEBHOOK"
+          set -e
+          code=$(curl -sS -o resp.txt -w "%{http_code}" \
+            -H "Content-Type: application/json" \
+            -X POST "$DISCORD_WEBHOOK?wait=true" \
+            -d @payload.json)
+          echo "HTTP $code"
+          cat resp.txt
+          test "$code" -ge 200 -a "$code" -lt 300
