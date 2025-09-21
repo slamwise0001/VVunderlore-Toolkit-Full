@@ -192,7 +192,7 @@
             }
           }
         ],
-        "currentTab": 5
+        "currentTab": 7
       }
     ],
     "direction": "horizontal",
@@ -216,7 +216,7 @@
       "vvunderlore-toolkit:VVunderlore Sidebars": false
     }
   },
-  "active": "bbb29d0b74fda199",
+  "active": "ae6df650a2e72aad",
   "lastOpenFiles": [
     "README.md",
     "Extras/Templates/playercharacter_template.md",

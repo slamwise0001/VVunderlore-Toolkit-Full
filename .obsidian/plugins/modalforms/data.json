@@ -27,6 +27,17 @@
             "type": "text",
             "hidden": false
           }
+        },
+        {
+          "name": "test",
+          "label": "test",
+          "description": "test",
+          "input": {
+            "type": "number",
+            "allowUnknownValues": false,
+            "hidden": true
+          },
+          "isRequired": false
         }
       ],
       "version": "1"

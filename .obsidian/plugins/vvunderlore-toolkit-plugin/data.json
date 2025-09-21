@@ -29,8 +29,8 @@
   "isFirstRun": "yes",
   "sessionTitlePreference": "name",
   "enableSidebarPreviews": true,
-  "latestToolkitVersion": "1.1.6",
-  "lastChecked": "2025-09-16T23:56:03.412Z",
+  "latestToolkitVersion": "1.1.7",
+  "lastChecked": "2025-09-21T14:51:32.014Z",
   "gameplay": {
     "selectedPlayers": [],
     "activeFolder": "World/People/Player Characters/Active"
@@ -97,23 +97,23 @@
       "githubPath": "Extras/Templates/newadventure_template.md"
     },
     "Extras/Templates/newcreature_template.md": {
-      "hash": "d645958eae6777d09810e6787e33792bc85a6ab9881bfd5bc24296229171b04b",
+      "hash": "fd80c2926c7e1cbceaf884658f15dca98b6b392cc60ffcfa7a9ce56e663fa6fa",
       "githubPath": "Extras/Templates/newcreature_template.md"
     },
     "Extras/Templates/newitem_template.md": {
-      "hash": "5e6b6f7899b0ef7a8b9edd184424f7e5dd9d27fb98fff6b96165cea376eb3911",
+      "hash": "1c4b491caaa6e9e2e7a0f375acf52131e85f5242920aeb289822f69ac5875e39",
       "githubPath": "Extras/Templates/newitem_template.md"
     },
     "Extras/Templates/newplace_template.md": {
-      "hash": "f71a76986e91468228d2825ae391d431cfc9576c794ec6a0e110d634ff079bdd",
+      "hash": "113018b3764375c2be2258dfb3d46c697a5e282cb83991b3edc353a68efc2d04",
       "githubPath": "Extras/Templates/newplace_template.md"
     },
     "Extras/Templates/npc_template.md": {
-      "hash": "0896e0d93cea71711ba456af398c548477a405209499d6053f454ec003586c9a",
+      "hash": "459d1e39a0e6aa7f2476605034b2abb3f5061fd77b5c1e917360f0b3b7d67e61",
       "githubPath": "Extras/Templates/npc_template.md"
     },
     "Extras/Templates/playercharacter_template.md": {
-      "hash": "f788c50f1488b71761a0c3fa84cfdf8cc1c0b5099771b721e0eabab23ab765bb",
+      "hash": "bf66621cb6c9ccefd5578d5ebd23f813f9da9889ecce4e1071a5d7853164653d",
       "githubPath": "Extras/Templates/playercharacter_template.md"
     },
     "Extras/Templates/playerdash_template.md": {
