@@ -3,7 +3,7 @@ name: Notify Discord on version change
 on:
   push:
     paths:
-      - ".verson.json"
+      - ".version.json"
 
 jobs:
   notify:
@@ -14,7 +14,7 @@ jobs:
       - name: Build Discord message
         id: build
         run: |
-          VERSION="$(jq -r '.version' .verson.json)"
+          VERSION="$(jq -r '.version' .version.json)"
           REPO_URL="https://github.com/${GITHUB_REPOSITORY}"
           BRANCH="${GITHUB_REF_NAME}"
           README_LINK="${REPO_URL}/blob/${BRANCH}/README.md"
