@@ -32,12 +32,11 @@
           "name": "test",
           "label": "test",
           "description": "test",
+          "isRequired": false,
           "input": {
             "type": "number",
-            "allowUnknownValues": false,
             "hidden": true
-          },
-          "isRequired": false
+          }
         }
       ],
       "version": "1"

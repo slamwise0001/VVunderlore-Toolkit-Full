@@ -180,19 +180,9 @@
               "icon": "gameplay",
               "title": "Gameplay"
             }
-          },
-          {
-            "id": "ae6df650a2e72aad",
-            "type": "leaf",
-            "state": {
-              "type": "modal-form-manage-forms-view",
-              "state": {},
-              "icon": "documents",
-              "title": "Manage forms"
-            }
           }
         ],
-        "currentTab": 7
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
@@ -216,7 +206,7 @@
       "vvunderlore-toolkit:VVunderlore Sidebars": false
     }
   },
-  "active": "ae6df650a2e72aad",
+  "active": "bbb29d0b74fda199",
   "lastOpenFiles": [
     "README.md",
     "Extras/Templates/playercharacter_template.md",
