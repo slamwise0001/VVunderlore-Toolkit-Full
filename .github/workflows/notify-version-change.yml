@@ -17,11 +17,9 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="$(jq -r '.version' .version.json)"
-          TITLE="VVunderlore Toolkit v${VERSION}"
+          TITLE="VVunderlore Toolkit • v${VERSION}"
 
           {
-            echo "Hey a new version of the VVunderlore Toolkit is available. It's version **${VERSION}**."
-            echo
             echo "**Changelog:**"
             echo
             cat README.md || true
