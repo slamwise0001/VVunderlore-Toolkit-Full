@@ -25,7 +25,7 @@ jobs:
 
       - name: Send to Discord
         env:
-          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_KEY }}
+          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_URL }}
         run: |
           curl -sS -X POST -H "Content-Type: application/json" \
             -d @payload.json "$DISCORD_WEBHOOK"
