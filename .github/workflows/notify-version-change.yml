@@ -16,7 +16,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          VERSION="$(jq -r '.version' .verson.json)"
+          VERSION="$(jq -r '.version' .version.json)"
           TITLE="VVunderlore Toolkit v${VERSION}"
 
           {
