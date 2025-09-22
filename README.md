@@ -21,4 +21,12 @@
 - Made several improvements to templates and files to use new Bases and stuff
 - Other things
 - bug fixes
+  
+  Known Issues:
+  
+- [ ] Links for Difficult Terrain are formatted dumbly and point nowhere
+- [ ] (2024) Challenge Rating parsing broken on SOME CR 0 creatures and beasts
+- [ ] Links and references to random entries, loot tables, and bespoke rule entries on Items do not work
+- [ ] Spell's like "Enlarge/Reduce" don't work because that's not what the spell is named in the Compendium (Enlarge-Reduce) for computery reasons
+- [ ] Ring of Resistance is wicked invisible, like where did it even go? 
 
