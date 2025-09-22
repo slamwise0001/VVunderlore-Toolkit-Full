@@ -201,7 +201,7 @@ dv.el("strong", "Unseen Items: " + pages.length);
 ## Credit
 ```dataviewjs
 // Define the folder to search for notes
-const folder = "People/Player Characters/Active"; // Replace with your folder path
+const folder = "World/People/Player Characters/Active"; // Replace with your folder path
 
 // Target the 'vcredit' field
 const fieldName = "vcredit";
@@ -248,7 +248,7 @@ function createEditableField(filePath, field, value) {
 ## Owned Items
 ```dataviewjs
 // Define the folder to search for items
-const folder = "Compendium/Items"; // Replace with your items folder path
+const folder = "World/Compendium/Items"; // Replace with your items folder path
 
 // Define the folder to search for player character notes
 const charactersFolder = "People/Player Characters/Active"; // Replace with your player characters folder
