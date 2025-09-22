@@ -343,9 +343,13 @@
       "displayName": "Vermun The Wandering Trader",
       "requires": [
         "tools",
+        "world-people-player characters-active",
         "",
         "extras",
-        "extras-templates"
+        "extras-templates",
+        "world",
+        "world-people",
+        "world-people-player characters"
       ]
     },
     {
