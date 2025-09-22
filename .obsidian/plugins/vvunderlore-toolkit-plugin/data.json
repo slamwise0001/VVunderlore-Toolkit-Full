@@ -30,7 +30,7 @@
   "sessionTitlePreference": "name",
   "enableSidebarPreviews": true,
   "latestToolkitVersion": "1.1.7",
-  "lastChecked": "2025-09-22T15:00:56.398Z",
+  "lastChecked": "2025-09-22T16:05:03.795Z",
   "gameplay": {
     "selectedPlayers": [],
     "activeFolder": "World/People/Player Characters/Active"
@@ -153,7 +153,7 @@
       "githubPath": "Tools/Spellbook.md"
     },
     "Tools/Vermun the Wandering Trader.md": {
-      "hash": "3a2fa41e44c0651cc697e0a3555ad9b2505fc74c17855f397bbb19f2ad786721",
+      "hash": "70c8216d5a40e1fc62b80f3190d7befc6ffee8b66c4644f01e97b1fac900aa0e",
       "githubPath": "Tools/Vermun the Wandering Trader.md"
     },
     "Welcome.md": {

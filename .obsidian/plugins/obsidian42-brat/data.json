@@ -1,0 +1,22 @@
+{
+  "pluginList": [
+    "slamwise0001/vvunderlore-toolkit-plugin"
+  ],
+  "pluginSubListFrozenVersion": [
+    {
+      "repo": "slamwise0001/vvunderlore-toolkit-plugin",
+      "version": "latest"
+    }
+  ],
+  "themesList": [],
+  "updateAtStartup": true,
+  "updateThemesAtStartup": true,
+  "enableAfterInstall": true,
+  "loggingEnabled": false,
+  "loggingPath": "BRAT-log",
+  "loggingVerboseEnabled": false,
+  "debuggingMode": false,
+  "notificationsEnabled": true,
+  "personalAccessToken": "",
+  "selectLatestPluginVersionByDefault": false
+}
