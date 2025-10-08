@@ -1,32 +1,13 @@
-- The VVorldbuilding sidebar!
-	- Template buttons for all the major stuff!
-		- Highlight text before clicking a template to use that text as the name and auto-turn it into a link!
-		- Buttons AND customizable shortcuts!
-	- Adventure filter: Snags all the links from an entire adventure folder and organizes them so you can get quick access to any note in your adventure!
-	- SPELLBOOK! 
-		- Replaces the old spellbook note
-		- Filter by Level, School, and Damage type to find the spell you need
-		- See wehn you need concentration so you don't fuck up your encounter flow!
-		- Select spells to add them to the grimoire, then copy and paste that static table into any note!
-- The Gameplay sidebar!
-	- Currently its just an AWESOME PLAYER TRACKER!
-		- Replaces the old Party Overview note
-		- Reads the "Active Players" folder so you can add players to the list from the toolbar
-		- Quick-view AC, HP (current and max), Speed, Alignment, and Passive Perception
-			- Current hp is editable and persistent!
-		- Click a name to get more details below include player build info, languages, key items, and spells!
-		- Pin a detail card so you can see multiple detail cards at once
-		- EDIT THE KEY ITEMS AND SPELLS DIRECTLY FROM THE CARD
-- Removed Vermun the Wandering Trader for now
-- Made several improvements to templates and files to use new Bases and stuff
-- Other things
-- bug fixes
+- Quick fix for the busted Adventure Hub template. Now the Player Characters and Takeaways tables, uh... exist. My bad. Will share fixes for already-made adventure hubs soon.
+- Added over 4000 beasts and the Fantasy Statblock plugin (will affect fresh installs only but I'll share a file for everyone else soon.
   
   Known Issues:
   
-- [ ] Links for Difficult Terrain are formatted dumbly and point nowhere
-- [ ] (2024) Challenge Rating parsing broken on SOME CR 0 creatures and beasts
-- [ ] Links and references to random entries, loot tables, and bespoke rule entries on Items do not work
-- [ ] Spell's like "Enlarge/Reduce" don't work because that's not what the spell is named in the Compendium (Enlarge-Reduce) for computery reasons
-- [ ] Ring of Resistance is wicked invisible, like where did it even go? 
+- Links for Difficult Terrain are formatted dumbly and point nowhere
+- (2024) Challenge Rating parsing broken on SOME CR 0 creatures and beasts
+- Links and references to random entries, loot tables, and bespoke rule entries on Items do not work
+- Spell's like "Enlarge/Reduce" don't work because that's not what the spell is named in the Compendium (Enlarge-Reduce) for computery reasons
+- Ring of Resistance is wicked invisible, like where did it even go? 
+- Properties seem to want to be open or closed at random on new notes. May add a VVunderlore toggle for those wanting a non-invasive experience.
+- 2024 compendium files show a bunch of 2014 content! OH NO. This is because all the data is scraped from 5e.tools (to avoid any legal crap on my end) and they keep 2014 info in the 2024 json files so the site can link/reference "replaced" content in the new edition and the parsers catch that 2014 data first because it's literally just listed first in the file. ACK. 
 
