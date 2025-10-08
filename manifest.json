@@ -197,10 +197,15 @@
       "requires": [
         "extras",
         "extras-templates",
+        "world-people-player characters-active",
+        "world-people-player characters-inactive",
         "",
         "extras-templates-base_sessiontemplate",
         "adventures",
-        "extras-sys"
+        "extras-sys",
+        "world",
+        "world-people",
+        "world-people-player characters"
       ]
     },
     {
