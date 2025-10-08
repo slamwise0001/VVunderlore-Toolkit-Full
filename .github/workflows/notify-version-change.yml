@@ -28,6 +28,7 @@ jobs:
           jq -n \
             --arg username "Update Peddler" \
             --arg avatar "https://publish-01.obsidian.md/access/6eeb85818256487c684eecfe4fbff970/Extras/Toolkit/Images/update_peddler.jpg" \
+            --arg content "@everyone" \
             --arg title "$TITLE" \
             --rawfile description desc.txt \
             --argjson color 14592 \
@@ -35,6 +36,8 @@ jobs:
             '{
               username: $username,
               avatar_url: $avatar,
+              content: $content,
+              allowed_mentions: { parse: ["everyone"] },
               embeds: [
                 {
                   title: $title,
